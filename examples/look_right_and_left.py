@@ -8,6 +8,9 @@ async def main():
     try:
         await drone.connect()
         await drone.takeoff()
+        await drone.turn_clockwise(90)
+        await drone.turn_counterclockwise(180)
+        await drone.turn_clockwise(90)
         await drone.land()
     finally:
         await drone.disconnect()

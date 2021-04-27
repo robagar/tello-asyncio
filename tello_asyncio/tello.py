@@ -47,6 +47,9 @@ class Tello:
     async def turn_clockwise(self, degrees):
         await self.send(f'cw {degrees}')    
 
+    async def turn_counterclockwise(self, degrees):
+        await self.send(f'ccw {degrees}')    
+
     async def send(self, message):
         if not self._transport.is_closing():
             print(f'SEND {message}')
