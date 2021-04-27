@@ -50,6 +50,24 @@ class Tello:
     async def turn_counterclockwise(self, degrees):
         await self.send(f'ccw {degrees}')    
 
+    async def move_up(self, distance):
+        await self.send(f'up {distance}')
+
+    async def move_down(self, distance):
+        await self.send(f'down {distance}')
+
+    async def move_left(self, distance):
+        await self.send(f'left {distance}')
+
+    async def move_right(self, distance):
+        await self.send(f'right {distance}')
+
+    async def move_forward(self, distance):
+        await self.send(f'forward {distance}')
+
+    async def move_back(self, distance):
+        await self.send(f'back {distance}')
+
     async def send(self, message):
         if not self._transport.is_closing():
             print(f'SEND {message}')
