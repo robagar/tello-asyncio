@@ -10,6 +10,9 @@ RESPONSE_TIMEOUT = 10
 
 
 class Tello:
+    '''
+    For ayncio-based interaction with the Tello EDU drone.
+    '''
 
     _protocol = None
     _transport = None
