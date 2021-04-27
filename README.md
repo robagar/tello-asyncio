@@ -20,7 +20,7 @@ async def main():
 asyncio.run(main())
 ```
 
-See the _examples_ directory for more usage example scripts.
+See the [examples](examples) directory for more usage example scripts.
 
 Requires Python 3.7+, developed and tested with Python 3.9.4
 
