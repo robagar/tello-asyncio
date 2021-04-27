@@ -44,6 +44,9 @@ class Tello:
     async def land(self):
         await self.send('land')
 
+    async def turn_clockwise(self, degrees):
+        await self.send(f'cw {degrees}')    
+
     async def send(self, message):
         if not self._transport.is_closing():
             print(f'SEND {message}')
