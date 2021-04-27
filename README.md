@@ -31,7 +31,7 @@ Basic drone control
 - UDP connection for sending commands and receiving responses (default AP mode only - you must join the drone's own WiFi network)
 - take off and land
 - rotate clockwise and counter-clockwise
-- move up, dow, left, right, forward and back
+- move up, down, left, right, forward and back
 
 ## Roadmap
 
