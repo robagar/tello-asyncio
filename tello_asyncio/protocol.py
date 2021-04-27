@@ -8,7 +8,7 @@ class TelloProtocol:
         self.transport = transport
 
     def datagram_received(self, data, addr):
-        message = data.decode()
+        message = data.decode('ascii')
         print('RECEIVED', message)
         if message == 'ok' and self.command_ok and not self.command_ok.done():
             self.command_ok.set_result(True)
