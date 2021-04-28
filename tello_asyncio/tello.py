@@ -1,5 +1,6 @@
 import asyncio
 from .protocol import TelloProtocol
+from .state import TelloState
 
 DEFAULT_DRONE_HOST = '192.168.10.1'
 
@@ -32,6 +33,9 @@ class Tello:
 
         self._transport = transport
         self._protocol = protocol
+
+        self._state = TelloState(local_port=STATE_UDP_PORT)
+        await self._state.connect(self._loop)
 
         await self.send('command')
 
