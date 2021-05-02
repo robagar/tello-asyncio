@@ -4,7 +4,7 @@ import asyncio
 from tello_asyncio import Tello
 
 def on_drone_state(state):
-    print(f'barometer: {state.barometer}, height: {state.height}, battery: {state.battery}')
+    print(f'height: {state.height}cm')
 
 async def main():
     drone = Tello(on_state=on_drone_state)
@@ -14,5 +14,9 @@ async def main():
         await drone.land()
     finally:
         await drone.disconnect()
+
+    print(f'total flight time: {drone.motor_time}s')
+    print(f'temperature: {drone.temperature.low}-{drone.temperature.high}°C')
+    print(f'battery: {drone.battery}%')
 
 asyncio.run(main())

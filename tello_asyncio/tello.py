@@ -109,3 +109,7 @@ class Tello:
         self._state_event.set()
         self._state_event.clear()
 
+    def __getattr__(self, name):
+        if self._state:
+            return getattr(self._state, name) 
+
