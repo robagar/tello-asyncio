@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-TelloState = namedtuple('TelloState', 'roll pitch yaw height battery')
+TelloState = namedtuple('TelloState', 'roll pitch yaw height barometer battery time_of_flight motor_time')
 
 
 class TelloStateListener:
@@ -50,10 +50,19 @@ def parse_state_message(message):
         except KeyError:
             return None
 
+    def get_float_value(key):
+        try:
+            return float(value_map[key])
+        except KeyError:
+            return None
+
     roll = get_int_value('roll')
     pitch = get_int_value('pitch')
     yaw = get_int_value('yaw')
     height = get_int_value('h')
+    barometer = get_float_value('baro')
     battery = get_int_value('bat')
+    time_of_flight = get_int_value('tof')
+    motor_time = get_int_value('time')
 
-    return TelloState(roll, pitch, yaw, height, battery)
+    return TelloState(roll, pitch, yaw, height, barometer, battery, time_of_flight, motor_time)
