@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-TelloState = namedtuple('TelloState', 'roll pitch yaw height barometer battery time_of_flight motor_time')
+TelloState = namedtuple('TelloState', 'raw roll pitch yaw height barometer battery time_of_flight motor_time')
 
 
 class TelloStateListener:
@@ -40,8 +40,8 @@ class TelloStateListener:
             self._transport = None
 
 
-def parse_state_message(message):
-    pairs = [p.split(':') for p in message.rstrip(';\r\n').split(';')]
+def parse_state_message(raw):
+    pairs = [p.split(':') for p in raw.rstrip(';\r\n').split(';')]
     value_map = { p[0]:p[1] for p in pairs }
 
     def get_int_value(key):
@@ -65,4 +65,4 @@ def parse_state_message(message):
     time_of_flight = get_int_value('tof')
     motor_time = get_int_value('time')
 
-    return TelloState(roll, pitch, yaw, height, barometer, battery, time_of_flight, motor_time)
+    return TelloState(raw, roll, pitch, yaw, height, barometer, battery, time_of_flight, motor_time)
