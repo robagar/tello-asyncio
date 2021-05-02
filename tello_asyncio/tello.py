@@ -1,6 +1,6 @@
 import asyncio
 from .protocol import TelloProtocol
-from .state import TelloState
+from .state import TelloStateListener
 
 DEFAULT_DRONE_HOST = '192.168.10.1'
 
@@ -18,8 +18,9 @@ class Tello:
     _protocol = None
     _transport = None
 
-    def __init__(self, drone_host=DEFAULT_DRONE_HOST):
+    def __init__(self, drone_host=DEFAULT_DRONE_HOST, on_state=None):
         self._drone_host = drone_host
+        self._on_state_callback = on_state
         self._loop = asyncio.get_event_loop()
 
     async def connect(self):
@@ -34,8 +35,8 @@ class Tello:
         self._transport = transport
         self._protocol = protocol
 
-        self._state = TelloState(local_port=STATE_UDP_PORT)
-        await self._state.connect(self._loop)
+        self._state_listener = TelloStateListener(local_port=STATE_UDP_PORT)
+        await self._state_listener.connect(self._loop, self._on_state_received)
 
         await self.send('command')
 
@@ -44,7 +45,8 @@ class Tello:
             print(f'DISCONNECT {self._drone_host}')
 
             self._transport.close()
- 
+            await self._state_listener.disconnect()
+
     async def takeoff(self):
         await self.send('takeoff')
 
@@ -85,3 +87,7 @@ class Tello:
             except asyncio.TimeoutError:
                 print(f'TIMEOUT {message}, disconnecting')
                 await self.disconnect()
+
+    def _on_state_received(self, state):
+        if self._on_state_callback:
+            self._on_state_callback(state)
