@@ -1,6 +1,4 @@
-from collections import namedtuple
-
-TelloState = namedtuple('TelloState', 'raw roll pitch yaw height barometer battery time_of_flight motor_time')
+from .types import Range, Vector, TelloState
 
 
 class TelloStateListener:
@@ -56,6 +54,13 @@ def parse_state_message(raw):
         except KeyError:
             return None
 
+    def get_int_range(low_key, high_key):
+        return Range(get_int_value(low_key), get_int_value(high_key))
+
+    def get_float_vector(x_key, y_key, z_key):
+        return Vector(get_float_value(x_key), get_float_value(y_key), get_float_value(z_key))
+
+
     roll = get_int_value('roll')
     pitch = get_int_value('pitch')
     yaw = get_int_value('yaw')
@@ -64,5 +69,8 @@ def parse_state_message(raw):
     battery = get_int_value('bat')
     time_of_flight = get_int_value('tof')
     motor_time = get_int_value('time')
+    temperature = get_int_range('templ', 'temph')
+    acceleration = get_float_vector('agx', 'agy', 'agz')
+    velocity = get_float_vector('vgx', 'vgy', 'vgz')
 
-    return TelloState(raw, roll, pitch, yaw, height, barometer, battery, time_of_flight, motor_time)
+    return TelloState(raw, roll, pitch, yaw, height, barometer, battery, time_of_flight, motor_time, temperature, acceleration, velocity)
