@@ -18,6 +18,8 @@ class Tello:
     _protocol = None
     _transport = None
 
+    _state = None
+
     def __init__(self, drone_host=DEFAULT_DRONE_HOST, on_state=None):
         self._drone_host = drone_host
         self._on_state_callback = on_state
@@ -37,6 +39,7 @@ class Tello:
 
         self._state_listener = TelloStateListener(local_port=STATE_UDP_PORT)
         await self._state_listener.connect(self._loop, self._on_state_received)
+        self._state_event = asyncio.Event()
 
         await self.send('command')
 
@@ -88,6 +91,21 @@ class Tello:
                 print(f'TIMEOUT {message}, disconnecting')
                 await self.disconnect()
 
+    @property
+    def state(self):
+        return self._state
+
+    @property
+    async def state_stream(self):
+        while True:
+            await self._state_event.wait()
+            yield self._state
+
     def _on_state_received(self, state):
         if self._on_state_callback:
             self._on_state_callback(state)
+
+        self._state = state
+        self._state_event.set()
+        self._state_event.clear()
+
