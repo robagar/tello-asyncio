@@ -33,12 +33,18 @@ Basic drone control
 - rotate clockwise and counter-clockwise
 - move up, down, left, right, forward and back
 
+**1.1.0**
+Drone state
+- listens for and parses UDP state messages (not yet including the mission pad related values)
+- access via the read only `state` object attribute, or via shortcuts like `height`, `temperature` etc
+- constructor takes an optional `on_state` callback argument for notification of new state
+- or use the asynchronous generator `state_stream` for an infinite stream of updates  
+
 ## Roadmap
 
 Coming soon...
 
 - More advanced control
-- Drone status
 - Video capture
 - Error handling
 
