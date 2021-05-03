@@ -45,12 +45,14 @@ Advanced drone control
 - flips
 - go/curve to relative position
 - emergency stop
+
 Video
 - start/stop video stream
 - video url
+
 Error handling
 - handles error command responses from drone
-  
+
 ## Roadmap
 
 Coming soon...
