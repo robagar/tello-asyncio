@@ -8,7 +8,8 @@ async def main():
     try:
         await drone.connect()
         await drone.takeoff()
-        await drone.go_to(relative_position=Vector(100, 50, 0), speed=25)
+        await drone.go_to(relative_position=Vector(100, 50, 100), speed=25)
+        await drone.go_to(relative_position=Vector(-100, -50, -100), speed=25)
         await drone.land()
     finally:
         await drone.disconnect()
