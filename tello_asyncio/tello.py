@@ -1,7 +1,7 @@
 import asyncio
+from collections import deque
 
 from .types import Direction
-from .protocol import TelloProtocol
 from .state import TelloStateListener
 
 DEFAULT_DRONE_HOST = '192.168.10.1'
@@ -22,6 +22,37 @@ class Tello:
     _transport = None
 
     _state = None
+    _flying = False
+
+    class Error(Exception):
+        pass
+
+    class Protocol:
+        def connection_made(self, transport):
+            self.responses = deque()
+
+        def datagram_received(self, data, addr):
+            message = data.decode('ascii')
+            print('RECEIVED', message)
+            try:
+                response = self.responses.popleft()
+                if message.startswith('ok'):
+                    response.set_result(message)
+                else:
+                    response.set_exception(Tello.Error(message))
+            except IndexError:
+                print('(not waiting for a response)')
+            except asyncio.exceptions.InvalidStateError:
+                pass
+
+        def error_received(self, error):
+            print('PROTOCOL ERROR', error)
+
+        def connection_lost(self, error):
+            # print('CONNECTION LOST', error)
+            for response in self.responses:
+                response.cancel()
+            self.responses = None
 
     def __init__(self, drone_host=DEFAULT_DRONE_HOST, on_state=None):
         self._drone_host = drone_host
@@ -32,7 +63,7 @@ class Tello:
         print(f'CONNECT {self._drone_host}')
 
         transport, protocol = await self._loop.create_datagram_endpoint(
-            TelloProtocol, 
+            Tello.Protocol, 
             local_addr=("0.0.0.0", CONTROL_UDP_PORT),
             remote_addr=(self._drone_host, CONTROL_UDP_PORT)
         )
@@ -57,10 +88,19 @@ class Tello:
         await self.send('emergency')
 
     async def takeoff(self):
+        self._flying = True
         await self.send('takeoff')
 
     async def land(self):
         await self.send('land')
+        self._flying = False
+
+    @property
+    def flying(self):
+        return self._flying
+
+    async def stop(self):
+         await self.send('stop')
 
     async def turn_clockwise(self, degrees):
         await self.send(f'cw {degrees}')    
@@ -136,13 +176,22 @@ class Tello:
     async def send(self, message):
         if not self._transport.is_closing():
             print(f'SEND {message}')
-            self._protocol.command_ok = self._loop.create_future()
+            response = self._loop.create_future()
+            self._protocol.responses.append(response)
             self._transport.sendto(message.encode())
             try:
-                await asyncio.wait_for(self._protocol.command_ok, timeout=RESPONSE_TIMEOUT)
+                await asyncio.wait_for(response, timeout=RESPONSE_TIMEOUT)
             except asyncio.TimeoutError:
-                print(f'TIMEOUT {message}, disconnecting')
-                await self.disconnect()
+                print(f'TIMEOUT {message}')
+                await self._abort()
+            except Tello.Error as error:
+                print(f'[{message}] ERROR {error}')
+                await self._abort()
+
+    async def _abort(self):
+        if self._flying:
+            await self.land()
+        await self.disconnect()
 
     @property
     def state(self):

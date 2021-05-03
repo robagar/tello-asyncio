@@ -7,7 +7,7 @@ class TelloStateListener:
 
     class Protocol:
         def connection_made(self, transport):
-            print('[state] CONNECTION MADE')
+            pass
 
         def datagram_received(self, data, addr):
             message = data.decode('ascii')
@@ -15,11 +15,12 @@ class TelloStateListener:
             state = parse_state_message(message)
             self.on_state_received(state)
 
-        def error_received(self, exc):
-            print('[state] ERROR', exc)
+        def error_received(self, error):
+            print('[state] PROTOCOL ERROR', error)
 
-        def connection_lost(self, exc):
-            print('[state] CONNECTION LOST', exc)
+        def connection_lost(self, error):
+            # print('[state] CONNECTION LOST', error)
+            pass
 
     def __init__(self, local_port):
         self._local_port = local_port
