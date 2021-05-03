@@ -74,4 +74,4 @@ def parse_state_message(raw):
     acceleration = get_float_vector('agx', 'agy', 'agz')
     velocity = get_float_vector('vgx', 'vgy', 'vgz')
 
-    return TelloState(raw, roll, pitch, yaw, height, barometer, battery, time_of_flight, motor_time, temperature, acceleration, velocity)
+    return TelloStateListener(raw, roll, pitch, yaw, height, barometer, battery, time_of_flight, motor_time, temperature, acceleration, velocity)
