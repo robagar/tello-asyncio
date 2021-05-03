@@ -1,2 +1,2 @@
 from .tello import Tello
-from .types import Range, Vector, TelloState
+from .types import Range, Vector, TelloState, Direction

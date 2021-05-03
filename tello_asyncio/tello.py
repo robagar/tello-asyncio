@@ -1,4 +1,6 @@
 import asyncio
+
+from .types import Direction
 from .protocol import TelloProtocol
 from .state import TelloStateListener
 
@@ -10,7 +12,6 @@ VIDEO_UDP_PORT = 11111
 VIDEO_URL = f'udp://0.0.0.0:{VIDEO_UDP_PORT}'
 
 RESPONSE_TIMEOUT = 10
-
 
 class Tello:
     '''
@@ -52,6 +53,9 @@ class Tello:
             self._transport.close()
             await self._state_listener.disconnect()
 
+    async def emergency_stop(self):
+        await self.send('emergency')
+
     async def takeoff(self):
         await self.send('takeoff')
 
@@ -62,7 +66,22 @@ class Tello:
         await self.send(f'cw {degrees}')    
 
     async def turn_counterclockwise(self, degrees):
-        await self.send(f'ccw {degrees}')    
+        await self.send(f'ccw {degrees}')
+
+    async def move(self, direction, distance):
+        if direction == Direction.UP:
+            return self.move_up(distance)    
+        if direction == Direction.DOWN:
+            return self.move_down(distance)    
+        if direction == Direction.LEFT:
+            return self.move_left(distance)    
+        if direction == Direction.RIGHT:
+            return self.move_right(distance)    
+        if direction == Direction.FORWARD:
+            return self.move_forward(distance)    
+        if direction == Direction.BACK:
+            return self.move_back(distance)
+        raise ValueError('invalid direction')    
 
     async def move_up(self, distance):
         await self.send(f'up {distance}')
