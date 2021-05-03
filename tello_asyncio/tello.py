@@ -124,6 +124,10 @@ class Tello:
     async def flip_back(self):
         await self.send('flip b')
 
+    async def go_to(self, relative_position, speed):
+        p = relative_position
+        await self.send(f'go {p.x} {p.y} {p.z} {speed}')
+
     async def send(self, message):
         if not self._transport.is_closing():
             print(f'SEND {message}')

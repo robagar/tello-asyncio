@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 
 import asyncio
-from tello_asyncio import Tello, Direction
+from tello_asyncio import Tello, Vector
 
 async def main():
     drone = Tello()
     try:
         await drone.connect()
         await drone.takeoff()
-        for direction in [Direction.LEFT, Direction.RIGHT, Direction.FORWARD, Direction.BACK]:
-            await drone.flip(direction) 
+        await drone.go_to(relative_position=Vector(100, 50, 0), speed=25)
         await drone.land()
     finally:
         await drone.disconnect()
