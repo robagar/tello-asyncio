@@ -11,7 +11,8 @@ STATE_UDP_PORT = 8890
 VIDEO_UDP_PORT = 11111
 VIDEO_URL = f'udp://0.0.0.0:{VIDEO_UDP_PORT}'
 
-RESPONSE_TIMEOUT = 10
+DEFAULT_RESPONSE_TIMEOUT = 10
+LONG_RESPONSE_TIMEOUT = 60
 
 class Tello:
     '''
@@ -166,21 +167,21 @@ class Tello:
 
     async def go_to(self, relative_position, speed):
         p = relative_position
-        await self.send(f'go {p.x} {p.y} {p.z} {speed}')
+        await self.send(f'go {p.x} {p.y} {p.z} {speed}', timeout=LONG_RESPONSE_TIMEOUT)
 
-    async def curve_to(self, relative_position, via_relative_position, speed):
+    async def curve_to(self, via_relative_position, relative_position, speed):
         p = relative_position
         v = via_relative_position
-        await self.send(f'curve {p.x} {p.y} {p.z} {v.x} {v.y} {v.z} {speed}')
+        await self.send(f'curve {v.x} {v.y} {v.z} {p.x} {p.y} {p.z} {speed}', timeout=LONG_RESPONSE_TIMEOUT)
 
-    async def send(self, message):
+    async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT):
         if not self._transport.is_closing():
             print(f'SEND {message}')
             response = self._loop.create_future()
             self._protocol.responses.append(response)
             self._transport.sendto(message.encode())
             try:
-                await asyncio.wait_for(response, timeout=RESPONSE_TIMEOUT)
+                await asyncio.wait_for(response, timeout=timeout)
             except asyncio.TimeoutError:
                 print(f'TIMEOUT {message}')
                 await self._abort()
