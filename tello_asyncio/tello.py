@@ -6,6 +6,8 @@ DEFAULT_DRONE_HOST = '192.168.10.1'
 
 CONTROL_UDP_PORT = 8889
 STATE_UDP_PORT = 8890
+VIDEO_UDP_PORT = 11111
+VIDEO_URL = f'udp://0.0.0.0:{VIDEO_UDP_PORT}'
 
 RESPONSE_TIMEOUT = 10
 
@@ -112,4 +114,14 @@ class Tello:
     def __getattr__(self, name):
         if self._state:
             return getattr(self._state, name) 
+
+    @property
+    def video_url(self):
+        return VIDEO_URL
+
+    async def start_video(self):
+        await self.send('streamon')
+
+    async def stop_video(self):
+        await self.send('streamoff')
 
