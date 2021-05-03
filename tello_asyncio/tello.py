@@ -128,6 +128,11 @@ class Tello:
         p = relative_position
         await self.send(f'go {p.x} {p.y} {p.z} {speed}')
 
+    async def curve_to(self, relative_position, via_relative_position, speed):
+        p = relative_position
+        v = via_relative_position
+        await self.send(f'curve {p.x} {p.y} {p.z} {v.x} {v.y} {v.z} {speed}')
+
     async def send(self, message):
         if not self._transport.is_closing():
             print(f'SEND {message}')
