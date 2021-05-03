@@ -81,7 +81,7 @@ class Tello:
             return self.move_forward(distance)    
         if direction == Direction.BACK:
             return self.move_back(distance)
-        raise ValueError('invalid direction')    
+        raise ValueError('invalid move direction')    
 
     async def move_up(self, distance):
         await self.send(f'up {distance}')
@@ -100,6 +100,29 @@ class Tello:
 
     async def move_back(self, distance):
         await self.send(f'back {distance}')
+
+    async def flip(self, direction):
+        if direction == Direction.LEFT:
+            return self.flip_left()    
+        if direction == Direction.RIGHT:
+            return self.flip_right()    
+        if direction == Direction.FORWARD:
+            return self.flip_forward()    
+        if direction == Direction.BACK:
+            return self.flip_back()
+        raise ValueError('invalid flip direction')    
+
+    async def flip_left(self):
+        await self.send('flip l')
+
+    async def flip_right(self):
+        await self.send('flip r')
+
+    async def flip_forward(self):
+        await self.send('flip f')
+
+    async def flip_back(self):
+        await self.send('flip b')
 
     async def send(self, message):
         if not self._transport.is_closing():
