@@ -40,11 +40,21 @@ Drone state
 - constructor takes an optional `on_state` callback argument for notification of new state
 - or use the asynchronous generator `state_stream` for an infinite stream of updates  
 
+**1.2.0**
+Advanced drone control
+- flips
+- go/curve to relative position
+- emergency stop
+Video
+- start/stop video stream
+- video url
+Error handling
+- handles error command responses from drone
+  
 ## Roadmap
 
 Coming soon...
 
-- More advanced control
-- Video capture
-- Error handling
+- Mission pads
+- Video data stream
 
