@@ -36,11 +36,14 @@ class Tello:
             message = data.decode('ascii')
             print('RECEIVED', message)
             try:
-                response = self.responses.popleft()
-                if message.startswith('ok'):
-                    response.set_result(message)
-                else:
-                    response.set_exception(Tello.Error(message))
+                response, response_parser = self.responses.popleft()
+                if response_parser:
+                    response.set_result(response_parser(message))
+                else:    
+                    if message == 'ok':
+                        response.set_result(message)
+                    else:
+                        response.set_exception(Tello.Error(message))
             except IndexError:
                 print('(not waiting for a response)')
             except asyncio.exceptions.InvalidStateError:
@@ -99,6 +102,10 @@ class Tello:
     @property
     def flying(self):
         return self._flying
+
+    @property
+    async def serial_number(self):
+        return await self.send('sn?', response_parser=lambda m: m)
 
     async def stop(self):
          await self.send('stop')
@@ -174,14 +181,14 @@ class Tello:
         v = via_relative_position
         await self.send(f'curve {v.x} {v.y} {v.z} {p.x} {p.y} {p.z} {speed}', timeout=LONG_RESPONSE_TIMEOUT)
 
-    async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT):
+    async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT, response_parser=None):
         if not self._transport.is_closing():
             print(f'SEND {message}')
             response = self._loop.create_future()
-            self._protocol.responses.append(response)
+            self._protocol.responses.append((response, response_parser))
             self._transport.sendto(message.encode())
             try:
-                await asyncio.wait_for(response, timeout=timeout)
+                return await asyncio.wait_for(response, timeout=timeout)
             except asyncio.TimeoutError:
                 print(f'TIMEOUT {message}')
                 await self._abort()
