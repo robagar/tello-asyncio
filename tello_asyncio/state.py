@@ -73,5 +73,7 @@ def parse_state_message(raw):
     temperature = get_int_range('templ', 'temph')
     acceleration = get_float_vector('agx', 'agy', 'agz')
     velocity = get_float_vector('vgx', 'vgy', 'vgz')
+    mission_pad_id = get_int_value('mid')
+    mission_pad_position = get_float_vector('x', 'y', 'z')
 
-    return TelloState(raw, roll, pitch, yaw, height, barometer, battery, time_of_flight, motor_time, temperature, acceleration, velocity)
+    return TelloState(raw, roll, pitch, yaw, height, barometer, battery, time_of_flight, motor_time, temperature, acceleration, velocity, mission_pad_id, mission_pad_position)

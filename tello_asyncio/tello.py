@@ -1,7 +1,7 @@
 import asyncio
 from collections import deque
 
-from .types import Direction
+from .types import Direction, MissionPadDetection
 from .state import TelloStateListener
 
 DEFAULT_DRONE_HOST = '192.168.10.1'
@@ -187,6 +187,15 @@ class Tello:
         p = relative_position
         v = via_relative_position
         await self.send(f'curve {v.x} {v.y} {v.z} {p.x} {p.y} {p.z} {speed}', timeout=LONG_RESPONSE_TIMEOUT)
+
+    async def enable_mission_pads(self):
+        await self.send('mon')
+
+    async def disable_mission_pads(self):
+        await self.send('moff')
+
+    async def set_mission_pad_detection(self, mission_pad_detection):
+        await self.send(f'mdirection {mission_pad_detection.value}')
 
     async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT, response_parser=None):
         if not self._transport.is_closing():
