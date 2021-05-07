@@ -30,13 +30,17 @@ class Tello:
 
     class Protocol:
         def connection_made(self, transport):
-            self.responses = deque()
+            self.pending = deque()
 
         def datagram_received(self, data, addr):
-            message = data.decode('ascii')
+            try:
+                message = data.decode('ascii')
+            except UnicodeDecodeError as e:
+                raise Tello.Error(f'DECODE ERROR {e} (data: {data})')
+                
             print('RECEIVED', message)
             try:
-                response, response_parser = self.responses.popleft()
+                response, response_parser = self.pending.popleft()
                 if response_parser:
                     response.set_result(response_parser(message))
                 else:    
@@ -45,18 +49,18 @@ class Tello:
                     else:
                         response.set_exception(Tello.Error(message))
             except IndexError:
-                print('(not waiting for a response)')
+                raise Tello.Error('NOT WAITING FOR RESPONSE')
             except asyncio.exceptions.InvalidStateError:
                 pass
 
         def error_received(self, error):
-            print('PROTOCOL ERROR', error)
+            raise Tello.Error(f'PROTOCOL ERROR {error}')
 
         def connection_lost(self, error):
             # print('CONNECTION LOST', error)
-            for response in self.responses:
+            for response, _ in self.pending:
                 response.cancel()
-            self.responses = None
+            self.pending.clear()
 
     def __init__(self, drone_host=DEFAULT_DRONE_HOST, on_state=None):
         self._drone_host = drone_host
@@ -185,7 +189,7 @@ class Tello:
         if not self._transport.is_closing():
             print(f'SEND {message}')
             response = self._loop.create_future()
-            self._protocol.responses.append((response, response_parser))
+            self._protocol.pending.append((response, response_parser))
             self._transport.sendto(message.encode())
             try:
                 return await asyncio.wait_for(response, timeout=timeout)
