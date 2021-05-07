@@ -40,14 +40,17 @@ class Tello:
                 
             print('RECEIVED', message)
             try:
-                response, response_parser = self.pending.popleft()
+                sent_message, response, response_parser = self.pending.popleft()
                 if response_parser:
-                    response.set_result(response_parser(message))
+                    result = response_parser(message)
                 else:    
                     if message == 'ok':
-                        response.set_result(message)
+                        result = None
                     else:
                         response.set_exception(Tello.Error(message))
+                        return
+                response.set_result((sent_message, result))
+
             except IndexError:
                 raise Tello.Error('NOT WAITING FOR RESPONSE')
             except asyncio.exceptions.InvalidStateError:
@@ -58,7 +61,7 @@ class Tello:
 
         def connection_lost(self, error):
             # print('CONNECTION LOST', error)
-            for response, _ in self.pending:
+            for m, response, rp in self.pending:
                 response.cancel()
             self.pending.clear()
 
@@ -189,10 +192,13 @@ class Tello:
         if not self._transport.is_closing():
             print(f'SEND {message}')
             response = self._loop.create_future()
-            self._protocol.pending.append((response, response_parser))
+            self._protocol.pending.append((message, response, response_parser))
             self._transport.sendto(message.encode())
             try:
-                return await asyncio.wait_for(response, timeout=timeout)
+                response_message, result = await asyncio.wait_for(response, timeout=timeout)
+                if response_message != message:
+                    raise Tello.Error('RESPONSE WRONG MESSAGE "{response_message}", expected "{message}" (UDP packet loss detected)')
+                return result
             except asyncio.TimeoutError:
                 print(f'TIMEOUT {message}')
                 await self._abort()
