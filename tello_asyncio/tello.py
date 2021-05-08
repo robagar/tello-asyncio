@@ -107,11 +107,11 @@ class Tello:
         return await self.send('sdk?', response_parser=lambda m: m)
 
     @property
-    async def battery(self):
+    async def query_battery(self):
         return await self.send('battery?', response_parser=lambda m: int(m))
 
     @property
-    async def flight_time(self):
+    async def query_motor_time(self):
         return await self.send('time?', response_parser=lambda m: int(m))
 
     async def emergency_stop(self):
