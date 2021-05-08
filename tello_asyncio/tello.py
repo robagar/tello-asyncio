@@ -182,7 +182,7 @@ class Tello:
     async def go_to(self, relative_position, speed, mission_pad=None):
         p = relative_position
         command = f'go {p.x} {p.y} {p.z} {speed}'
-        if mission_pad is not None:
+        if mission_pad:
             command += f' m{mission_pad}'
         await self.send(command, timeout=LONG_RESPONSE_TIMEOUT)
 
@@ -190,7 +190,7 @@ class Tello:
         p = relative_position
         v = via_relative_position
         command = f'curve {v.x} {v.y} {v.z} {p.x} {p.y} {p.z} {speed}'
-        if mission_pad is not None:
+        if mission_pad:
             command += f' m{mission_pad}'
         await self.send(command, timeout=LONG_RESPONSE_TIMEOUT)
 
@@ -202,6 +202,11 @@ class Tello:
 
     async def set_mission_pad_detection(self, mission_pad_detection):
         await self.send(f'mdirection {mission_pad_detection.value}')
+
+    async def jump(self, relative_position, speed, yaw, from_mission_pad, to_mission_pad):
+        p = relative_position
+        command = f'jump {p.x} {p.y} {p.z} {speed} {yaw} m{from_mission_pad} m{to_mission_pad}'
+        await self.send(command)
 
     async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT, response_parser=None):
         if not self._transport.is_closing():
