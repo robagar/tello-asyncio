@@ -133,9 +133,8 @@ class Tello:
     async def speed(self):
         return self.send('speed?', response_parser=lambda m: int(m))
 
-    @speed.setter
-    async def speed(speed):
-        return self.send(f'speed {speed}')
+    async def set_speed(speed):
+        await self.send(f'speed {speed}')
 
     async def stop(self):
          await self.send('stop')
