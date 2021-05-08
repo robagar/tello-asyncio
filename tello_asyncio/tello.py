@@ -228,6 +228,9 @@ class Tello:
         command = f'jump {p.x} {p.y} {p.z} {speed} {yaw} m{from_mission_pad} m{to_mission_pad}'
         await self.send(command)
 
+    async def remote_control(self, left_right, forward_back, up_down, yaw):
+        await self.send(f'rc {left_right} {forward_back} {up_down} {yaw}')
+
     async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT, response_parser=None):
         if not self._transport.is_closing():
             print(f'SEND {message}')
