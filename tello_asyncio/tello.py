@@ -231,6 +231,16 @@ class Tello:
     async def remote_control(self, left_right, forward_back, up_down, yaw):
         await self.send(f'rc {left_right} {forward_back} {up_down} {yaw}')
 
+    async def set_wifi_credentials(self, ssid, password):
+        await self.send(f'wifi {ssid} {password}')
+
+    async def connect_to_wifi(self, ssid, password):
+        await self.send(f'ap {ssid} {password}')
+
+    @property
+    async def wifi_signal_to_noise_ratio(self):
+        return self.send('wifi?', response_parser=lambda m: int(m))
+
     async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT, response_parser=None):
         if not self._transport.is_closing():
             print(f'SEND {message}')
