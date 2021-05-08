@@ -88,16 +88,28 @@ class Tello:
 
         await self.send('command')
 
-    @property
-    async def serial_number(self):
-        return await self.send('sn?', response_parser=lambda m: m)
-
     async def disconnect(self):
         if self._transport and not self._transport.is_closing():
             print(f'DISCONNECT {self._drone_host}')
 
             self._transport.close()
             await self._state_listener.disconnect()
+
+    @property
+    async def serial_number(self):
+        return await self.send('sn?', response_parser=lambda m: m)
+
+    @property
+    async def sdk_version(self):
+        return await self.send('sdk?', response_parser=lambda m: m)
+
+    @property
+    async def battery(self):
+        return await self.send('battery?', response_parser=lambda m: int(m))
+
+    @property
+    async def flight_time(self):
+        return await self.send('time?', response_parser=lambda m: int(m))
 
     async def emergency_stop(self):
         await self.send('emergency')
