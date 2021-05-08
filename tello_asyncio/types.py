@@ -6,7 +6,7 @@ Range = namedtuple('Range', 'low high')
 
 Vector = namedtuple('Vector', 'x y z')
 
-TelloState = namedtuple('TelloState', 'raw roll pitch yaw height barometer battery time_of_flight motor_time temperature acceleration velocity mission_pad_id mission_pad_position')
+TelloState = namedtuple('TelloState', 'raw roll pitch yaw height barometer battery time_of_flight motor_time temperature acceleration velocity mission_pad mission_pad_position')
 
 class Direction(Enum):
     UP = 'up'
