@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 
+##############################################################################
+#
+# NB Work in progress - This has not yet been successful for me!
+#
+##############################################################################
+
 import asyncio
 import h264decoder # from https://github.com/DaWelter/h264decoder
-from PIL import Image
+from PIL import Image # requires Pillow
 
 from tello_asyncio import Tello
 
@@ -11,8 +17,6 @@ decoder = h264decoder.H264Decoder()
 def on_video_frame(frame):
     print(f'FRAME {frame}')
     fs = decoder.decode(frame)
-    n = len(fs)
-    print(f'fs {n}')
     for f in fs:
         (frame_data, width, height, ls) = f # ls?
         image = Image.frombytes('RGB', (width,height), frame_data)
