@@ -24,6 +24,8 @@ See the [examples](examples) directory for more usage example scripts.
 
 Requires Python 3.7+, developed and tested with Python 3.9.4
 
+Full documentation is available on [Read the docs](https://tello-asyncio.readthedocs.io/en/latest/)
+
 ## Version History
 
 **1.0.0**
