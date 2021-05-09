@@ -26,7 +26,8 @@ Requires Python 3.7+, developed and tested with Python 3.9.4
 
 ## Version History
 
-**1.0.0** 
+**1.0.0**
+
 Basic drone control
 - UDP connection for sending commands and receiving responses (default AP mode only - you must join the drone's own WiFi network)
 - take off and land
@@ -34,6 +35,7 @@ Basic drone control
 - move up, down, left, right, forward and back
 
 **1.1.0**
+
 Drone state
 - listens for and parses UDP state messages (not yet including the mission pad related values)
 - access via the read only `state` object attribute, or via shortcuts like `height`, `temperature` etc
@@ -41,6 +43,7 @@ Drone state
 - or use the asynchronous generator `state_stream` for an infinite stream of updates  
 
 **1.2.0**
+
 Advanced drone control
 - flips
 - go/curve to relative position
@@ -53,10 +56,22 @@ Video
 Error handling
 - handles error command responses from drone
 
+**1.3.0**
+
+Complete SDK
+- mission pads
+- wifi
+- remote control
+
+Video
+- raw video frame data via callback or async generator
+
+Error handling
+- detects command/response mismatch
+
 ## Roadmap
 
 Coming soon...
 
-- Mission pads
-- Video data stream
-
+- Documentation!
+- Python 3.6 support 
