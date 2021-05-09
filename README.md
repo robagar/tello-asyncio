@@ -69,9 +69,11 @@ Video
 Error handling
 - detects command/response mismatch
 
+**1.3.1**
+- Documentation
+
 ## Roadmap
 
 Coming soon...
 
-- Documentation!
 - Python 3.6 support 

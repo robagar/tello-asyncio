@@ -22,7 +22,7 @@ copyright = '2021, Rob Agar'
 author = 'Rob Agar'
 
 # The full version, including alpha/beta/rc tags
-release = '1.3.0'
+release = '1.3.1'
 
 
 # -- General configuration ---------------------------------------------------
