@@ -511,10 +511,10 @@ class Tello:
         '''
         Start streaming video data.  Only works in AP mode using the drone's own WiFi.
         '''
-        await self.send('streamon')
         if on_frame:
             await self.connect_video(on_frame)
-
+        await self.send('streamon')
+ 
     async def stop_video(self):
         '''
         Stop streaming video.

@@ -1,6 +1,10 @@
 VIDEO_UDP_PORT = 11111
 VIDEO_URL = f'udp://0.0.0.0:{VIDEO_UDP_PORT}'
 
+VIDEO_WIDTH = 960
+VIDEO_HEIGHT = 720
+
+MAX_CHUNK_SIZE = 1460
 
 class TelloVideoListener:
 
@@ -8,11 +12,14 @@ class TelloVideoListener:
 
     class Protocol:
         def connection_made(self, transport):
-            pass
+            self._chunks = []
 
         def datagram_received(self, data, addr):
-            print('[video] RECEIVED')
-            self.on_frame_received(data)
+            self._chunks.append(data)
+            if len(data) != MAX_CHUNK_SIZE:
+                frame = b''.join(self._chunks)
+                self._chunks = [] 
+                self.on_frame_received(frame)
 
         def error_received(self, error):
             print('[video] PROTOCOL ERROR', error)

@@ -1,29 +1,28 @@
 #!/usr/bin/env python3
-
-##############################################################################
-#
-# NB Work in progress - This has not yet been successful for me!
-#
-##############################################################################
-
+from pathlib import Path
 import asyncio
-import h264decoder # from https://github.com/DaWelter/h264decoder
+import h264decoder # see https://github.com/DaWelter/h264decoder for installation instructions
 from PIL import Image # requires Pillow
 
 from tello_asyncio import Tello
 
+Path("video_save_frames").mkdir(exist_ok=True)
+
 i = 1
 decoder = h264decoder.H264Decoder()
 def on_video_frame(frame):
-    print(f'FRAME {frame}')
-    fs = decoder.decode(frame)
-    for f in fs:
-        (frame_data, width, height, ls) = f # ls?
-        image = Image.frombytes('RGB', (width,height), frame_data)
-        file_path = f'video_save_frames/frame-{i}.jpg'
-        image.save(file_path)
-        i += 1
+    global i
 
+    try:
+        (frame_info, num_bytes) = decoder.decode_frame(frame)
+        (frame_data, width, height, row_size) = frame_info
+        if width and height:
+            image = Image.frombytes('RGB', (width,height), frame_data)
+            file_path = f'video_save_frames/frame-{i}.jpg'
+            image.save(file_path)
+            i += 1
+    except Exception as e:
+        print(e)
 
 async def main():
     drone = Tello()
