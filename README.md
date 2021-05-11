@@ -22,7 +22,7 @@ asyncio.run(main())
 
 See the [examples](examples) directory for more usage example scripts.
 
-Requires Python 3.7+, developed and tested with Python 3.9.4
+Requires Python 3.7+, developed and tested with Python 3.9.4.  There are no other dependencies.
 
 Full documentation is available on [Read the docs](https://tello-asyncio.readthedocs.io/en/latest/)
 
@@ -72,7 +72,17 @@ Error handling
 - detects command/response mismatch
 
 **1.3.1**
+
 - Documentation
+
+**1.3.2**
+
+- Documentation on [Read the docs](https://tello-asyncio.readthedocs.io/en/latest/)
+
+**1.4.0**
+
+- Video frame data reassembled properly from UDP packet chunks 
+- Working video frame decoding example
 
 ## Roadmap
 

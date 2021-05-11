@@ -7,6 +7,10 @@ VIDEO_HEIGHT = 720
 MAX_CHUNK_SIZE = 1460
 
 class TelloVideoListener:
+    '''
+    Connects to the drone's video data stream and reassembles h.264 encoded 
+    frames from UDP packet chunks before passing them on.
+    '''
 
     _transport = None
 
