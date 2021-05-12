@@ -1,49 +1,45 @@
 #!/usr/bin/env python3
 
-##############################################################################
-#
-# NB In theory this displays a window showing the video streamed from the 
-# but drone this script DOES NOT REALLY WORK! It has worked once for me, but
-# with horrendous latency ~10s
-#
-# python-opencv must be installed
-#
-########################################################
-
-import cv2  
-
 import asyncio
-from tello_asyncio import Tello
+from threading import Thread
 
-async def main():
-    drone = Tello()
+import cv2  # requires python-opencv 
 
-    async def fly():
-        await drone.takeoff()
-        await drone.turn_clockwise(360)
-        await drone.land()
+from tello_asyncio import Tello, VIDEO_URL
 
-    async def show_video():
-        print(f'[video] START')
-        capture = cv2.VideoCapture(drone.video_url)
-        capture.open(drone.video_url)
-        await drone.start_video()
-        while True:
-            grabbed, frame = capture.read()
-            if grabbed:
-                cv2.imshow('tello-asyncio', frame)
-            if cv2.waitKey(1) != -1:
-                break
-            await asyncio.sleep(1/30)
-        print(f'[video] ending...')
-        capture.release()
-        cv2.destroyAllWindows()
-        print(f'[video] END')
+##############################################################################
+# drone control in worker thread 
 
-    try:
-        await drone.connect()
-        await asyncio.wait([fly(), show_video()])
-    finally:
-        await drone.disconnect()
+def fly():
+    async def main():
+        drone = Tello()
+        try:
+            await drone.connect()
+            await drone.start_video()
+            await drone.takeoff()
+            await drone.turn_clockwise(360)
+            await drone.land()
+        finally:
+            await drone.stop_video()
+            await drone.disconnect()
 
-asyncio.run(main())
+    asyncio.run(main())
+
+fly_thread = Thread(target=fly, daemon=True)
+fly_thread.start()
+
+##############################################################################
+# Video capture and GUI in main thread
+
+capture = cv2.VideoCapture(VIDEO_URL)
+capture.open(VIDEO_URL)
+
+while True:
+    grabbed, frame = capture.read()
+    if grabbed:
+        cv2.imshow('tello-asyncio', frame)
+    if cv2.waitKey(1) != -1:
+        break
+
+capture.release()
+cv2.destroyAllWindows()
