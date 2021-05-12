@@ -52,3 +52,16 @@ Please note that this example has a couple of extra dependencies to install befo
 
 .. literalinclude:: ../examples/video_save_frames.py
    :language: python
+
+
+Video in OpenCV
+---------------
+
+Display streaming video in an `OpenCV <https://opencv.org/>`_ window.  
+
+The key point is that the OpenCV GUI expects to have full ownership of the main thread with its own event loop, so the drone control asyncio event loop runs separately in a worker thread.
+
+- `python-opencv <https://pypi.org/project/opencv-python/>`_ or similar
+
+.. literalinclude:: ../examples/video_opencv.py
+   :language: python

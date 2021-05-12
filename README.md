@@ -84,6 +84,10 @@ Error handling
 - Video frame data reassembled properly from UDP packet chunks 
 - Working video frame decoding example
 
+**1.4.1**
+
+- Video in OpenCV example
+
 ## Roadmap
 
 Coming soon...
