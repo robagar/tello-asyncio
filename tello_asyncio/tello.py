@@ -70,7 +70,7 @@ class Tello:
 
             except IndexError:
                 raise Tello.Error('NOT WAITING FOR RESPONSE')
-            except asyncio.exceptions.InvalidStateError:
+            except asyncio.InvalidStateError:
                 pass
 
         def error_received(self, error):
