@@ -139,14 +139,12 @@ class Tello:
         '''
         return await self.send('sdk?', response_parser=lambda m: m)
 
-    @property
     async def query_battery(self):
         '''
         The battery level as a percentage, requested directly from the drone.
         '''
         return await self.send('battery?', response_parser=lambda m: int(m))
 
-    @property
     async def query_motor_time(self):
         '''
         The active motor time in seconds, requested directly from the drone.
@@ -185,7 +183,7 @@ class Tello:
         '''
         The drone speed in cm/s, requested directly from the drone.
         '''
-        return self.send('speed?', response_parser=lambda m: int(m))
+        return await self.send('speed?', response_parser=lambda m: int(m))
 
     async def set_speed(speed):
         '''
@@ -432,7 +430,7 @@ class Tello:
         '''
         The signal-to-noise ratio of the WiFi connection.
         '''
-        return self.send('wifi?', response_parser=lambda m: int(m))
+        return await self.send('wifi?', response_parser=lambda m: int(m))
 
     async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT, response_parser=None):
         '''
