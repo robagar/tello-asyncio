@@ -20,4 +20,7 @@ async def main():
     print(f'total flight time: {drone.motor_time}s')
     print(f'temperature: {drone.temperature.low}-{drone.temperature.high}°C')
 
-asyncio.run(main())
+# Python 3.7+
+#asyncio.run(main())
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())

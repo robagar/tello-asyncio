@@ -18,4 +18,7 @@ async def main():
         await drone.stop_video()
         await drone.disconnect()
 
-asyncio.run(main())
+# Python 3.7+
+#asyncio.run(main())
+loop = asyncio.get_event_loop()
+loop.run_until_complete(main())

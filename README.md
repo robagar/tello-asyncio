@@ -88,8 +88,6 @@ Error handling
 
 - Video in OpenCV example
 
-## Roadmap
-
-Coming soon...
+**1.5.0**
 
 - Python 3.6 support 
