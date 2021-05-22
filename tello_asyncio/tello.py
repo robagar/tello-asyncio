@@ -505,11 +505,17 @@ class Tello:
         '''
         return VIDEO_URL
 
-    async def start_video(self, on_frame=None):
+    async def start_video(self, on_frame=None, connect=True):
         '''
         Start streaming video data.  Only works in AP mode using the drone's own WiFi.
+
+        :param on_frame: Callback called when a new frame arrives, taking :class:`tello_asyncio.tello.Tello` drone and `bytes` frame raw data arguments
+        :type on_frame: Callable, optional
+        :param connect: Whether to start receiving frame data, default `True`
+        :type connect: Boolean, optional
         '''
-        await self.connect_video(on_frame)
+        if connect:
+            await self.connect_video(on_frame)
         await self.send('streamon')
  
     async def stop_video(self):
