@@ -3,7 +3,7 @@
 import asyncio
 from tello_asyncio import Tello
 
-def on_video_frame(frame):
+def on_video_frame(drone, frame):
     print(f'FRAME {frame}')
 
 async def main():

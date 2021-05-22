@@ -3,7 +3,7 @@
 import asyncio
 from tello_asyncio import Tello, MissionPadDetection
 
-def on_drone_state(state):
+def on_drone_state(drone, state):
     print(f'mission pad: {state.mission_pad_id}, position: {state.mission_pad_position}')
 
 async def main():

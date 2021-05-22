@@ -18,9 +18,9 @@ class Tello:
     For ayncio-based interaction with the Tello EDU drone.
 
     :param drone_host: Drone IP address, defaults to '192.168.10.1'
-    :param on_state: Callback called when state data is received from the drone, taking a single :class:`tello_asyncio.types.TelloState` argument.
+    :param on_state: Callback called when state data is received from the drone, taking :class:`tello_asyncio.tello.Tello` drone and :class:`tello_asyncio.types.TelloState` state arguments.
     :type on_state: Callable, optional
-    :param on_video_frame: Called when video frame data is received from the drone, taking a single `bytes` argument containing the raw data from the drone.
+    :param on_video_frame: Called when video frame data is received from the drone, taking :class:`tello_asyncio.tello.Tello` drone and `bytes` frame argument containing the raw data from the drone.
     :type on_video_frame: Callable, optional
     '''
 
@@ -485,7 +485,7 @@ class Tello:
 
     def _on_state_received(self, state):
         if self._on_state_callback:
-            self._on_state_callback(state)
+            self._on_state_callback(self, state)
 
         self._state = state
         self._state_event.set()
@@ -509,8 +509,7 @@ class Tello:
         '''
         Start streaming video data.  Only works in AP mode using the drone's own WiFi.
         '''
-        if on_frame:
-            await self.connect_video(on_frame)
+        await self.connect_video(on_frame)
         await self.send('streamon')
  
     async def stop_video(self):
@@ -524,8 +523,8 @@ class Tello:
         Opens a connection to the `video_url` and listens for the video frame 
         data streamed after `start_video` is called.
 
-        :param on_frame: Callback called when a new frame arrives
-        :type on_frame: Callable taking single `bytes` argument
+        :param on_frame: Callback called when a new frame arrives, taking :class:`tello_asyncio.tello.Tello` drone and `bytes` frame raw data arguments
+        :type on_frame: Callable, optional
         '''
         if on_frame:
             self._on_video_frame_callback = on_frame
@@ -535,7 +534,7 @@ class Tello:
 
     def _on_video_frame(self, frame):
         if self._on_video_frame_callback:
-            self._on_video_frame_callback(frame)
+            self._on_video_frame_callback(self, frame)
         self._video_frame = frame
         self._video_frame_event.set()
         self._video_frame_event.clear()

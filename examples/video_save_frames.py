@@ -10,7 +10,7 @@ Path("video_save_frames").mkdir(exist_ok=True)
 
 i = 1
 decoder = h264decoder.H264Decoder()
-def on_video_frame(frame):
+def on_video_frame(drone, frame):
     global i
 
     try:

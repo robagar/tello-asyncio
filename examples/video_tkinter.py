@@ -15,7 +15,7 @@ frame_image = None
 
 def fly():
     decoder = h264decoder.H264Decoder()
-    def on_video_frame(frame):
+    def on_video_frame(drone, frame):
         global frame_image
         try:
             (frame_info, num_bytes) = decoder.decode_frame(frame)

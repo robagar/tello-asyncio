@@ -3,7 +3,7 @@
 import asyncio
 from tello_asyncio import Tello
 
-def on_drone_state(state):
+def on_drone_state(drone, state):
     print(f'acceleration: {state.acceleration}, velocity: {state.velocity}')
 
 
