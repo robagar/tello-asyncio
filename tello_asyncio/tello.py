@@ -2,8 +2,9 @@ import asyncio
 from collections import deque
 
 from .types import Direction, MissionPadDetection
-from .state import TelloStateListener
+from .state import TelloStateListener, STATE_FIELDS
 from .video import TelloVideoListener, VIDEO_URL
+from .wifi import wait_for_wifi
 
 DEFAULT_DRONE_HOST = '192.168.10.1'
 
@@ -30,6 +31,7 @@ class Tello:
     _state = None
     _video = None
     _flying = False
+    _wifi_ssid_prefix = 'TELLO'
 
     class Error(Exception):
         '''
@@ -414,6 +416,7 @@ class Tello:
         :param ssid: Network name
         :param password: Password
         '''
+        self._wifi_ssid_prefix = ssid
         await self.send(f'wifi {ssid} {password}')
 
     async def connect_to_wifi(self, ssid, password):
@@ -423,6 +426,7 @@ class Tello:
         :param ssid: Network name
         :param password: Password
         '''
+        self._wifi_ssid_prefix = ssid
         await self.send(f'ap {ssid} {password}')
 
     @property
@@ -431,6 +435,16 @@ class Tello:
         The signal-to-noise ratio of the WiFi connection.
         '''
         return await self.send('wifi?', response_parser=lambda m: int(m))
+
+    async def wifi_wait_for_network(self):
+        '''
+        Waits until the WiFi network is established.
+        
+        NB: 
+        - This does not actually connect to the WiFi network
+        - Only works on Linux
+        '''
+        await wait_for_wifi(self._wifi_ssid_prefix)
 
     async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT, response_parser=None):
         '''
@@ -495,8 +509,12 @@ class Tello:
         '''
         Shortcut to the drone state :class:`tello_asyncio.types.TelloState` properties.
         '''
-        if self._state:
-            return getattr(self._state, name) 
+        if name in STATE_FIELDS:
+            if self._state:
+                return getattr(self._state, name)
+            else:
+                return None
+        raise AttributeError(f"'Tello' object has no attribute {name}") 
 
     @property
     def video_url(self):

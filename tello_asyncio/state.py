@@ -1,5 +1,6 @@
 from .types import Range, Vector, TelloState
 
+STATE_FIELDS = ['raw', 'roll', 'pitch', 'yaw', 'height', 'barometer', 'battery', 'time_of_flight', 'motor_time', 'temperature', 'acceleration', 'velocity', 'mission_pad', 'mission_pad_position']
 
 class TelloStateListener:
 
