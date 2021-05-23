@@ -185,9 +185,9 @@ class Tello:
         '''
         The drone speed in cm/s, requested directly from the drone.
         '''
-        return await self.send('speed?', response_parser=lambda m: int(m))
+        return await self.send('speed?', response_parser=lambda m: float(m))
 
-    async def set_speed(speed):
+    async def set_speed(self, speed):
         '''
         Set the forward speed.
 

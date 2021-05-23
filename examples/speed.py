@@ -9,8 +9,8 @@ async def main():
         await drone.connect()
         await drone.takeoff()
 
-        for i in range(3):
-            await drone.speed = 10 * i
+        for i in range(1, 3):
+            await drone.set_speed(10 * i)
             speed = await drone.speed
             print(f'speed: {speed}') 
 
