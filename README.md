@@ -97,7 +97,7 @@ Error handling
 
 - Python 3.6 support 
 
-** 1.6.0 **
+**1.6.0**
 
 - Drone instance passed to state and video callbacks
 - Wait for WiFi network (Linux only)
