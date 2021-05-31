@@ -25,7 +25,7 @@ TelloState.temperature.__doc__ = 'Range in temperature in degrees Celsius'
 TelloState.acceleration.__doc__ = ':class:`tello_asyncio.types.Vector` acceleration in cm/s/s in each axis direction'
 TelloState.velocity.__doc__ = ':class:`tello_asyncio.types.Vector` speed in cm/s in each axis direction'
 TelloState.mission_pad.__doc__ = 'Mission pad ID'
-TelloState.mission_pad_position.__doc__ = ':class:`tello_asyncio.types.Vector` mission pad relative posistion'
+TelloState.mission_pad_position.__doc__ = ':class:`tello_asyncio.types.Vector` mission pad relative position'
 
 
 class Direction(Enum):
