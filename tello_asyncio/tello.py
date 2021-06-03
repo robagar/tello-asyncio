@@ -617,3 +617,22 @@ class Tello:
             await self._video_frame_event.wait()
             yield self._video_frame
 
+    ##########################################################################
+    # Tello SDK 3.x
+
+    async def motor_on(self):
+        '''
+        Starts the motors at low speed to keep the drone cool while lon the ground.
+        Requires SDK 3+
+        :return: The response from the drone
+        '''
+        return await self.send('motoron')
+
+    async def motor_off(self):
+        '''
+        Stops the motors if started in low speed mode.
+        Requires SDK 3+
+        :return: The response from the drone
+        '''
+        return await self.send('motoroff')
+
