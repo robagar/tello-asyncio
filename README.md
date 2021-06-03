@@ -41,7 +41,7 @@ It works best sequentially like this...
 await drone.takeoff()
 await drone.land()
 ```
-...but **not** concurrently like this (which will not work as expected)
+...but **not** concurrently (which will not work as expected)
 ``` python 
 await asyncio.gather(
     drone.takeoff(), 
