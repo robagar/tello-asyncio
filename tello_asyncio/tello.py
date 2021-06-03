@@ -96,6 +96,7 @@ class Tello:
     async def connect(self):
         '''
         Opens the UDP connection to the drone and puts it in SDK mode.
+        :return: The response from the drone
         '''
         print(f'CONNECT {self._drone_host}')
 
@@ -113,7 +114,7 @@ class Tello:
         self._state_event = asyncio.Event()
 
         # tell drone to be in SDK mode
-        await self.send('command')
+        return await self.send('command')
 
     async def disconnect(self):
         '''
@@ -162,15 +163,17 @@ class Tello:
     async def takeoff(self):
         '''
         Take off and hover.
+        :return: The response from the drone
         '''
         self._flying = True
-        await self.send('takeoff')
+        return await self.send('takeoff')
 
     async def land(self):
         '''
         Land and stop motors.
+        :return: The response from the drone
         '''
-        await self.send('land')
+        return await self.send('land')
         self._flying = False
 
     @property
@@ -192,30 +195,34 @@ class Tello:
         Set the forward speed.
 
         :param speed: Desired speed, 10-100 cm/s
+        :return: The response from the drone
         '''
-        await self.send(f'speed {speed}')
+        return await self.send(f'speed {speed}')
 
     async def stop(self):
         '''
         Stop and hover in place.
+        :return: The response from the drone
         '''
-        await self.send('stop')
+        return await self.send('stop')
 
     async def turn_clockwise(self, degrees):
         '''
         Turn clockwise.
 
         :param degrees: int, Angle in degrees 1-360°
+        :return: The response from the drone
         '''
-        await self.send(f'cw {degrees}')    
+        return await self.send(f'cw {degrees}')    
 
     async def turn_counterclockwise(self, degrees):
         '''
         Turn anticlockwise.
 
         :param degrees: Angle in degrees 1-360°
+        :return: The response from the drone
         '''
-        await self.send(f'ccw {degrees}')
+        return await self.send(f'ccw {degrees}')
 
     async def move(self, direction, distance):
         '''
@@ -224,6 +231,7 @@ class Tello:
         :param direction: Direction of movement
         :type direction: :class:`tello_asyncio.types.Direction`
         :param distance: The distance to travel, 20-500 cm
+        :return: The response from the drone
         '''
         if direction == Direction.UP:
             return await self.move_up(distance)    
@@ -244,48 +252,54 @@ class Tello:
         Move straight up.
 
         :param distance: Distance to travel, 20-500 cm
+        :return: The response from the drone
         '''
-        await self.send(f'up {distance}')
+        return await self.send(f'up {distance}')
 
     async def move_down(self, distance):
         '''
         Move straight down.
 
         :param distance: Distance to travel, 20-500 cm
+        :return: The response from the drone
         '''
-        await self.send(f'down {distance}')
+        return await self.send(f'down {distance}')
 
     async def move_left(self, distance):
         '''
         Move straight left.
 
         :param distance: Distance to travel, 20-500 cm
+        :return: The response from the drone
         '''
-        await self.send(f'left {distance}')
+        return await self.send(f'left {distance}')
 
     async def move_right(self, distance):
         '''
         Move straight right.
 
         :param distance: Distance to travel, 20-500 cm
+        :return: The response from the drone
         '''
-        await self.send(f'right {distance}')
+        return await self.send(f'right {distance}')
 
     async def move_forward(self, distance):
         '''
         Move straight forwards.
 
         :param distance: Distance to travel, 20-500 cm
+        :return: The response from the drone
         '''
-        await self.send(f'forward {distance}')
+        return await self.send(f'forward {distance}')
 
     async def move_back(self, distance):
         '''
         Move straight backwards.
 
         :param distance: Distance to travel, 20-500 cm
+        :return: The response from the drone
         '''
-        await self.send(f'back {distance}')
+        return await self.send(f'back {distance}')
 
     async def flip(self, direction):
         '''
@@ -293,6 +307,7 @@ class Tello:
 
         :param direction: The direction to flip in.
         :type direction: :class:`tello_asyncio.types.Direction` 
+        :return: The response from the drone
         '''
         if direction == Direction.LEFT:
             return await self.flip_left()    
@@ -307,24 +322,28 @@ class Tello:
     async def flip_left(self):
         '''
         Flip left.
+        :return: The response from the drone
         '''
-        await self.send('flip l')
+        return await self.send('flip l')
 
     async def flip_right(self):
         '''
         Flip right.
+        :return: The response from the drone
         '''
-        await self.send('flip r')
+        return await self.send('flip r')
 
     async def flip_forward(self):
         '''
         Flip forwards.
+        :return: The response from the drone
         '''
-        await self.send('flip f')
+        return await self.send('flip f')
 
     async def flip_back(self):
         '''
         Flip backwards.
+        :return: The response from the drone
         '''
         await self.send('flip b')
 
@@ -337,12 +356,13 @@ class Tello:
         :type relative_position: :class:`tello_asyncio.types.Vector`
         :param mission_pad: The mission pad ID, 1-8
         :type mission_pad: int, optional 
+        :return: The response from the drone
         '''
         p = relative_position
         command = f'go {p.x} {p.y} {p.z} {speed}'
         if mission_pad:
             command += f' m{mission_pad}'
-        await self.send(command, timeout=LONG_RESPONSE_TIMEOUT)
+        return await self.send(command, timeout=LONG_RESPONSE_TIMEOUT)
 
     async def curve_to(self, via_relative_position, relative_position, speed, mission_pad=None):
         '''
@@ -356,25 +376,28 @@ class Tello:
         :type speed: int
         :param mission_pad: The mission pad ID, 1-8
         :type mission_pad: int, optional 
+        :return: The response from the drone
         '''
         p = relative_position
         v = via_relative_position
         command = f'curve {v.x} {v.y} {v.z} {p.x} {p.y} {p.z} {speed}'
         if mission_pad:
             command += f' m{mission_pad}'
-        await self.send(command, timeout=LONG_RESPONSE_TIMEOUT)
+        return await self.send(command, timeout=LONG_RESPONSE_TIMEOUT)
 
     async def enable_mission_pads(self):
         '''
         Start attempting to detect mission pads.
+        :return: The response from the drone
         '''
-        await self.send('mon')
+        return await self.send('mon')
 
     async def disable_mission_pads(self):
         '''
         Stop detecting mission pads.
+        :return: The response from the drone
         '''
-        await self.send('moff')
+        return await self.send('moff')
 
     async def set_mission_pad_detection(self, mission_pad_detection):
         '''
@@ -382,8 +405,9 @@ class Tello:
         
         :param mission_pad_detection: Forwards, down or both.
         :param mission_pad_detection: :class:`tello_asyncio.types.MissionPadDetection`
+        :return: The response from the drone
         '''
-        await self.send(f'mdirection {mission_pad_detection.value}')
+        return await self.send(f'mdirection {mission_pad_detection.value}')
 
     async def jump(self, relative_position, speed, yaw, from_mission_pad, to_mission_pad):
         '''
@@ -393,10 +417,11 @@ class Tello:
         :type relative_position: :class:`tello_asyncio.types.Vector`
         :param speed: Speed of travel, 10-100 cm/s
         :param yaw: Angle to turn on arrival 0-360°
+        :return: The response from the drone
         '''
         p = relative_position
         command = f'jump {p.x} {p.y} {p.z} {speed} {yaw} m{from_mission_pad} m{to_mission_pad}'
-        await self.send(command)
+        return await self.send(command)
 
     async def remote_control(self, left_right, forward_back, up_down, yaw):
         '''
@@ -406,8 +431,9 @@ class Tello:
         :param forward_back: Desired speed forwards, -100-100 cm/s
         :param up_down: Desired speed up, -100-100 cm/s
         :param yaw: Desired yaw -100-100°/s
+        :return: The response from the drone
         '''
-        await self.send(f'rc {left_right} {forward_back} {up_down} {yaw}')
+        return await self.send(f'rc {left_right} {forward_back} {up_down} {yaw}')
 
     async def set_wifi_credentials(self, ssid, password):
         '''
@@ -415,9 +441,10 @@ class Tello:
 
         :param ssid: Network name
         :param password: Password
+        :return: The response from the drone
         '''
         self._wifi_ssid_prefix = ssid
-        await self.send(f'wifi {ssid} {password}')
+        return await self.send(f'wifi {ssid} {password}')
 
     async def connect_to_wifi(self, ssid, password):
         '''
@@ -425,9 +452,10 @@ class Tello:
  
         :param ssid: Network name
         :param password: Password
+        :return: The response from the drone
         '''
         self._wifi_ssid_prefix = ssid
-        await self.send(f'ap {ssid} {password}')
+        return await self.send(f'ap {ssid} {password}')
 
     @property
     async def wifi_signal_to_noise_ratio(self):
@@ -453,7 +481,8 @@ class Tello:
         :param message: The command string
         :param timeout: Time to wait in seconds for a response
         :param response_parser: A function that converts the response into a return value. 
-        :rtype: `None`, unless `response_parser` is used.
+        :return: The response from the drone
+        :rtype: str, unless `response_parser` is used.
         '''
         if not self._transport.is_closing():
             print(f'SEND {message}')
@@ -468,9 +497,11 @@ class Tello:
             except asyncio.TimeoutError:
                 print(f'TIMEOUT {message}')
                 await self._abort()
+                return 'timeout'
             except Tello.Error as error:
                 print(f'[{message}] ERROR {error}')
                 await self._abort()
+                return error
 
     async def _abort(self):
         if self._flying:
@@ -531,16 +562,18 @@ class Tello:
         :type on_frame: Callable, optional
         :param connect: Whether to start receiving frame data, default `True`
         :type connect: Boolean, optional
+        :return: The response from the drone
         '''
         if connect:
             await self.connect_video(on_frame)
-        await self.send('streamon')
+        return await self.send('streamon')
  
     async def stop_video(self):
         '''
         Stop streaming video.
+        :return: The response from the drone
         '''
-        await self.send('streamoff')
+        return await self.send('streamoff')
 
     async def connect_video(self, on_frame=None):
         '''
