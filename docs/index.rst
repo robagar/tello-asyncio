@@ -35,3 +35,23 @@ Requires Python 3.6+. Developed and tested with Python 3.9.4 in Mac OS and 3.6.9
    modules
    examples
 
+A Note on Awaiting
+------------------
+
+The Tello SDK command/response model is a natural fit for the asynchronous python `awaitable <https://docs.python.org/3/library/asyncio-task.html#awaitables>`_ idea, but the drone will get confused if commands are sent before it's had a chance to respond. Each command should be *awaited* before sending the next.
+
+It works best sequentially like this... 
+
+.. code-block:: python
+
+    await drone.takeoff()
+    await drone.land()
+
+\...but **not** concurrently like this (which will not work as expected)
+
+.. code-block:: python
+
+    await asyncio.gather(
+        drone.takeoff(), 
+        drone.land()
+
