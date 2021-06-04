@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# NB requires SDK 3+ 
+
 import asyncio
 from tello_asyncio import Tello
 

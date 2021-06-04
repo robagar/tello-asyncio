@@ -40,3 +40,17 @@ class MissionPadDetection(Enum):
     DOWN = 0
     FORWARD = 1
     BOTH = 2 
+
+class VideoFrameRate(Enum):
+    LOW = 'low'
+    MIDDLE = 'middle'
+    HIGH = 'high'
+
+class VideoResolution(Enum):
+    LOW = 'low'
+    HIGH = 'high'
+
+class ControllerHardware(Enum):
+    TELLO = 'TELLO'
+    OPEN_SOURCE = 'RMTT'
+

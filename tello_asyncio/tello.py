@@ -1,7 +1,7 @@
 import asyncio
 from collections import deque
 
-from .types import Direction, MissionPadDetection
+from .types import Direction, MissionPadDetection, ControllerHardware
 from .state import TelloStateListener, STATE_FIELDS
 from .video import TelloVideoListener, VIDEO_URL
 from .wifi import wait_for_wifi
@@ -33,6 +33,7 @@ class Tello:
     _flying = False
     _wifi_ssid_prefix = 'TELLO'
     _sdk_version = None
+    _controller_hardware = None
 
     class Error(Exception):
         '''
@@ -633,6 +634,11 @@ class Tello:
         if not v.startswith('3'):
             raise Tello.Error(f'SDK version 3 required. Drone SDK version string is "{v}"') 
 
+    async def _require_open_source_controller(self):
+        h = await self.controller_hardware
+        if not h == ControllerHardware.OPEN_SOURCE:
+            raise Tello.Error(f'Requires the open source TT controller.  Drone hardware is "{h}"')
+
     async def motor_on(self):
         '''
         Starts the motors at low speed to keep the drone cool while lon the ground.
@@ -660,3 +666,113 @@ class Tello:
         await self._require_sdk_3()
         return await self.send('throwfly')
 
+    async def reboot(self):
+        '''
+        Reboot the drone.
+        Requires SDK 3+
+        :return: The response from the drone
+        '''
+        await self._require_sdk_3()
+        return await self.send('reboot')
+
+    async def set_wifi_channel(self, wifi_channel):
+        '''
+        Sets the Wifi channel.
+        Requires SDK 3+ and the open source controller.
+        :param wifi_channel: The WiFi channel
+        :return: The response from the drone
+        '''
+        await self._require_open_source_controller()
+        return await self.send(f'wifisetchannel {wifi_channel}')
+
+    async def set_ports(self, status_port, video_port):
+        '''
+        Sets the UDP ports for status and video data.
+        Requires SDK 3+
+        :return: The response from the drone
+        '''
+        await self._require_sdk_3()
+        return await self.send(f'port {status_port} {video_port}')
+
+    async def set_video_frame_rate(self, frame_rate):
+        '''
+        Sets the video frame rate.
+        Requires SDK 3+
+        :param frame_rate: "low" (5fps), "middle" (15fps) or "high" (30fps)
+        :type frame_rate: :class:`tello_asyncio.types.VideoFrameRate`
+        :return: The response from the drone
+        '''
+        await self._require_sdk_3()
+        return await self.send(f'setfps {frame_rate}')
+
+    async def set_video_bit_rate(self, bit_rate):
+        '''
+        Sets the video bit rate.
+        Requires SDK 3+
+        :param bit_rate: 1-5Mbps, or zero for auto
+        :return: The response from the drone
+        '''
+        await self._require_sdk_3()
+        return await self.send(f'setbitrate {bit_rate}')
+
+    async def set_video_resolution(self, resolution):
+        '''
+        Sets the video resolution.
+        Requires SDK 3+
+        :param resolution: "low" 480p or "high" 720p
+        :type frame_rate: :class:`tello_asyncio.types.VideoResolution`
+        :return: The response from the drone
+        '''
+        await self._require_sdk_3()
+        return await self.send(f'setbitrate {bit_rate}')
+
+    @property
+    async def controller_hardware(self):
+        '''
+        The controller hardware - "TELLO" or "RMTT" for the open source controller.
+        Requires SDK 3+
+        '''
+        await self._require_sdk_3()
+        if not self._controller_hardware:
+            self._controller_hardware = await self.send('hardware?')
+        return self._controller_hardware
+
+    @property
+    async def wifi_version(self):
+        '''
+        The WiFi version.
+        Requires SDK 3+ and the open source controller
+        '''
+        await self._require_open_source_controller()
+        return await self.send('wifiversion?')
+
+    @property
+    async def wifi_name_and_password(self):
+        '''
+        The WiFi access point name and password.
+        Requires SDK 3+ and the open source controller
+        '''
+        await self._require_open_source_controller()
+        return await self.send('ap?')
+
+    @property
+    async def wifi_ssid(self):
+        '''
+        The WiFi SSID.
+        Requires SDK 3+ and the open source controller
+        '''
+        await self._require_open_source_controller()
+        return await self.send('ssid?')
+
+    async def set_multi_wifi_credentials(self, ssid, password):
+        '''
+        Set WiFi credentials for connecting to multiple devices as a router.
+        Requires SDK 3+ and the open source controller
+        :param ssid: Network name
+        :param password: Password
+        :return: The response from the drone
+        '''
+        await self._require_open_source_controller()
+        return await self.send(f'multiwifi {ssid} {password}')
+            
+    

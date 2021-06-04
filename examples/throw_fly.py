@@ -11,7 +11,7 @@ async def main():
         await drone.wifi_wait_for_network()
         await drone.connect()
         print('Throw the drone hozontally to launch within 5 seconds!')
-        await drone.throwfly()
+        await drone.throw_fly()
         await asyncio.sleep(10)
         await drone.land()
     finally:
