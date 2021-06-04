@@ -32,6 +32,7 @@ class Tello:
     _video = None
     _flying = False
     _wifi_ssid_prefix = 'TELLO'
+    _sdk_version = None
 
     class Error(Exception):
         '''
@@ -140,7 +141,9 @@ class Tello:
         '''
         The Tello SDK version.
         '''
-        return await self.send('sdk?', response_parser=lambda m: m)
+        if not self._sdk_version:
+            self._sdk_version = await self.send('sdk?', response_parser=lambda m: m)
+        return self._sdk_version
 
     async def query_battery(self):
         '''
@@ -472,6 +475,7 @@ class Tello:
         - This does not actually connect to the WiFi network
         - Only works on Linux
         '''
+        print('waiting for WiFi...')
         await wait_for_wifi(self._wifi_ssid_prefix)
 
     async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT, response_parser=None):
@@ -620,12 +624,18 @@ class Tello:
     ##########################################################################
     # Tello SDK 3.x
 
+    async def _require_sdk_3(self):
+        v = await self.sdk_version
+        if not v.startswith('3'):
+            raise Tello.Error(f'SDK version 3 required. Drone SDK version string is "{v}"') 
+
     async def motor_on(self):
         '''
         Starts the motors at low speed to keep the drone cool while lon the ground.
         Requires SDK 3+
         :return: The response from the drone
         '''
+        await self._require_sdk_3()
         return await self.send('motoron')
 
     async def motor_off(self):
@@ -634,5 +644,6 @@ class Tello:
         Requires SDK 3+
         :return: The response from the drone
         '''
+        await self._require_sdk_3()
         return await self.send('motoroff')
 
