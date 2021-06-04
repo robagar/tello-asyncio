@@ -38,8 +38,8 @@ Requires Python 3.6+. Developed and tested with Python 3.9.4 in Mac OS and 3.6.9
 Tello SDK Support
 -----------------
 
-* `Tello\ SDK\ 2.0 <https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf>`_ (Tello EDU) - complete support
-* `Tello\ SDK\ 3.0 <https://dl.djicdn.com/downloads/RoboMaster+TT/Tello_SDK_3.0_User_Guide_en.pdf>`_ (RoboMaster TT) - complete support, but `EXT` commands for controlling LEDs etc must be formatted by the user
+* `Tello SDK 2.0 <https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf>`_ (Tello EDU) - complete support
+* `Tello SDK 3.0 <https://dl.djicdn.com/downloads/RoboMaster+TT/Tello_SDK_3.0_User_Guide_en.pdf>`_ (RoboMaster TT) - complete support, but `EXT` commands for controlling LEDs etc must be formatted by the user
 
 A Note on Awaiting
 ------------------
