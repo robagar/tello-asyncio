@@ -476,7 +476,11 @@ class Tello:
         - Only works on Linux
         '''
         print('waiting for WiFi...')
-        await wait_for_wifi(self._wifi_ssid_prefix)
+        try:
+            await wait_for_wifi(self._wifi_ssid_prefix)
+        except Exception as e:
+            print(f'...wait for WiFi failed, error: {e}')
+            print('assuming WiFi network is connected and continuing')
 
     async def send(self, message, timeout=DEFAULT_RESPONSE_TIMEOUT, response_parser=None):
         '''
@@ -501,11 +505,11 @@ class Tello:
             except asyncio.TimeoutError:
                 print(f'TIMEOUT {message}')
                 await self._abort()
-                return 'timeout'
+                raise
             except Tello.Error as error:
                 print(f'[{message}] ERROR {error}')
                 await self._abort()
-                return error
+                raise
 
     async def _abort(self):
         if self._flying:

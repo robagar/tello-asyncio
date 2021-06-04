@@ -13,7 +13,10 @@ async def wait_for_wifi(ssid_prefix):
         if proc.returncode == 0:
             s = stdout.decode()
             if s.startswith(ssid_prefix): return
-
+        else:
+            e = stderr.decode()
+            if e:
+                raise Exception(e)
         await asyncio.sleep(0.25)
 
 
