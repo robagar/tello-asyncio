@@ -31,6 +31,11 @@ Requires Python 3.6+. Developed and tested with Python 3.9.4 in Mac OS and 3.6.9
 
 Full documentation is available on [Read the docs](https://tello-asyncio.readthedocs.io/en/latest/)
 
+## Tello SDK Support
+
+* [Tello SDK 2.0](https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf) (Tello EDU) - complete support
+* [Tello SDK 3.0](https://dl.djicdn.com/downloads/RoboMaster+TT/Tello_SDK_3.0_User_Guide_en.pdf) (RoboMaster TT) - complete support, but `EXT` commands for controlling LEDs etc must be formatted by the user
+
 ## A Note on Awaiting
 
 The Tello SDK command/response model is a natural fit for the asynchronous python [awaitable](https://docs.python.org/3/library/asyncio-task.html#awaitables) idea, but the drone will get confused if commands are sent before it's had a chance to respond. Each command should be *awaited* before sending the next.
