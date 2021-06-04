@@ -774,5 +774,20 @@ class Tello:
         '''
         await self._require_open_source_controller()
         return await self.send(f'multiwifi {ssid} {password}')
-            
+
+    async def send_ext_command(self, command):
+        '''
+        Sends a command like "EXT xxx" for the open source contoller, returning
+        the response.
+
+        See the `SDK 3.0 User Guide` <https://dl.djicdn.com/downloads/RoboMaster+TT/Tello_SDK_3.0_User_Guide_en.pdf>`_ for command details.
+
+        Requires SDK 3+ and the open source controller
+        :param ssid: Network name
+        :param password: Password
+        :return: The response from the drone
+        '''
+        await self._require_open_source_controller()
+        return await self.send(f'EXT {command}')
+                        
     
