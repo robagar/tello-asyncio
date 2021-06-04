@@ -651,3 +651,12 @@ class Tello:
         await self._require_sdk_3()
         return await self.send('motoroff')
 
+    async def throw_fly(self):
+        '''
+        Launch the drone by throwing horizontally within 5 seconds.
+        Requires SDK 3+
+        :return: The response from the drone
+        '''
+        await self._require_sdk_3()
+        return await self.send('throwfly')
+
