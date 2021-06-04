@@ -124,3 +124,8 @@ Error handling
 
 - Drone instance passed to state and video callbacks
 - Wait for WiFi network (Linux only)
+
+**2.0.0**
+
+- Tello SDK 3.0 support
+
