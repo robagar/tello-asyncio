@@ -18,6 +18,7 @@ async def main():
         await drone.turn_clockwise(90)
 
     try:
+        await drone.wifi_wait_for_network()
         await drone.connect()
         await drone.takeoff()
         

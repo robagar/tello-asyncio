@@ -9,6 +9,7 @@ def on_video_frame(drone, frame):
 async def main():
     drone = Tello()
     try:
+        await drone.wifi_wait_for_network()
         await drone.connect()
         await drone.start_video(on_video_frame)
         await drone.takeoff()
