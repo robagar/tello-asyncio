@@ -1,0 +1,4 @@
+takeoff
+cw 360
+flip b
+land
