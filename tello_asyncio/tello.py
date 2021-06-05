@@ -1,5 +1,6 @@
 import asyncio
 from collections import deque
+from inspect import isawaitable
 
 from .types import Direction, MissionPadDetection, ControllerHardware
 from .state import TelloStateListener, STATE_FIELDS
@@ -23,6 +24,8 @@ class Tello:
     :type on_state: Callable, optional
     :param on_video_frame: Called when video frame data is received from the drone, taking :class:`tello_asyncio.tello.Tello` drone and `bytes` frame argument containing the raw data from the drone.
     :type on_video_frame: Callable, optional
+    :param on_error: Called when a command fails for any reason, taking :class:`tello_asyncio.tello.Tello` drone and :class:`tello_asyncio.tello.Tello.Error` frame arguments.
+    :type on_video_frame: Callable or awaitable function, optional
     '''
 
     _protocol = None
@@ -86,13 +89,14 @@ class Tello:
                 response.cancel()
             self.pending.clear()
 
-    def __init__(self, drone_host=DEFAULT_DRONE_HOST, on_state=None, on_video_frame=None):
+    def __init__(self, drone_host=DEFAULT_DRONE_HOST, on_state=None, on_video_frame=None, on_error=None):
         '''
         Constructor
         '''
         self._drone_host = drone_host
         self._on_state_callback = on_state
         self._on_video_frame_callback = on_video_frame
+        self._on_error = on_error
         self._loop = asyncio.get_event_loop()
 
     async def connect(self):
@@ -498,19 +502,28 @@ class Tello:
             response = self._loop.create_future()
             self._protocol.pending.append((message, response, response_parser))
             self._transport.sendto(message.encode())
+            error = None
             try:
                 response_message, result = await asyncio.wait_for(response, timeout=timeout)
-                if response_message != message:
-                    raise Tello.Error('RESPONSE WRONG MESSAGE "{response_message}", expected "{message}" (UDP packet loss detected)')
-                return result
+                if response_message == message:
+                    return result
+                else:
+                    error = Tello.Error('RESPONSE WRONG MESSAGE "{response_message}", expected "{message}" (UDP packet loss detected)')
             except asyncio.TimeoutError:
-                print(f'TIMEOUT {message}')
+                error = Tello.Error(f'[{message}] TIMEOUT')
+            except Tello.Error as e:
+                error = Tello.Error(f'[{message}] ERROR {e}')
+    
+            if self._on_error:
+                # user callback
+                if isawaitable(self._on_error):
+                    await self._on_error(self, error)
+                else:
+                    self._on_error(self, error)
+            else:
+                # default behaviour
                 await self._abort()
-                raise
-            except Tello.Error as error:
-                print(f'[{message}] ERROR {error}')
-                await self._abort()
-                raise
+                raise error
 
     async def _abort(self):
         if self._flying:
