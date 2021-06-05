@@ -1,6 +1,6 @@
 import asyncio
 from collections import deque
-from inspect import isawaitable
+from inspect import iscoroutinefunction
 
 from .types import Direction, MissionPadDetection, ControllerHardware
 from .state import TelloStateListener, STATE_FIELDS
@@ -120,7 +120,16 @@ class Tello:
         self._state_event = asyncio.Event()
 
         # tell drone to be in SDK mode
-        return await self.send('command')
+        response = await self.send('command')
+
+        # check battery
+        b = await self.query_battery()
+        if b < 10:
+            print(f'WARNING low battery: {b}%')
+        else:
+            print(f'battery: {b}%')
+
+        return response
 
     async def disconnect(self):
         '''
@@ -516,7 +525,7 @@ class Tello:
     
             if self._on_error:
                 # user callback
-                if isawaitable(self._on_error):
+                if iscoroutinefunction(self._on_error):
                     await self._on_error(self, error)
                 else:
                     self._on_error(self, error)
@@ -525,10 +534,13 @@ class Tello:
                 await self._abort()
                 raise error
 
+    _aborted = False
     async def _abort(self):
-        if self._flying:
-            await self.land()
-        await self.disconnect()
+        if not self._aborted:
+            self._aborted = True
+            if self._flying:
+                await self.land()
+            await self.disconnect()
 
     @property
     def state(self):

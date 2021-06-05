@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 import asyncio
 from tello_asyncio import Tello
