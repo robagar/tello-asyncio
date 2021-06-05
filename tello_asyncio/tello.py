@@ -221,7 +221,7 @@ class Tello:
         :param degrees: int, Angle in degrees 1-360°
         :return: The response from the drone
         '''
-        return await self.send(f'cw {degrees}')    
+        return await self.send(f'cw {round(degrees)}')    
 
     async def turn_counterclockwise(self, degrees):
         '''
@@ -230,7 +230,7 @@ class Tello:
         :param degrees: Angle in degrees 1-360°
         :return: The response from the drone
         '''
-        return await self.send(f'ccw {degrees}')
+        return await self.send(f'ccw {round(degrees)}')
 
     async def move(self, direction, distance):
         '''
