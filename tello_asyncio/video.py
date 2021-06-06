@@ -19,6 +19,7 @@ class TelloVideoListener:
             self._chunks = []
 
         def datagram_received(self, data, addr):
+            self.on_video_frame_chunk_received(data)
             self._chunks.append(data)
             if len(data) != MAX_CHUNK_SIZE:
                 frame = b''.join(self._chunks)
@@ -31,12 +32,13 @@ class TelloVideoListener:
         def connection_lost(self, error):
             pass
 
-    async def connect(self, loop, on_video_frame_received):
+    async def connect(self, loop, on_video_frame_chunk_received, on_video_frame_received):
         transport, protocol = await loop.create_datagram_endpoint(
             TelloVideoListener.Protocol, 
             local_addr=("0.0.0.0", VIDEO_UDP_PORT)
         )
         self._transport = transport
+        protocol.on_video_frame_chunk_received = on_video_frame_chunk_received 
         protocol.on_frame_received = on_video_frame_received
 
     async def disconnect(self):

@@ -620,8 +620,14 @@ class Tello:
         if on_frame:
             self._on_video_frame_callback = on_frame
         self._video = TelloVideoListener()
+        self._video_frame_chunk_event = asyncio.Event()
         self._video_frame_event = asyncio.Event()
-        await self._video.connect(self._loop, self._on_video_frame)
+        await self._video.connect(self._loop, self._on_video_frame_chunk, self._on_video_frame)
+
+    def _on_video_frame_chunk(self, frame_chunk):
+        self._video_frame_chunk = frame_chunk
+        self._video_frame_chunk_event.set()
+        self._video_frame_chunk_event.clear()
 
     def _on_video_frame(self, frame):
         if self._on_video_frame_callback:
@@ -639,6 +645,17 @@ class Tello:
         :rtype: `bytes`
         '''
         return self._video_frame
+
+    @property
+    async def video_chunk_stream(self):
+        '''
+        Infinite stream of video frame data chunks.
+        
+        :rtype: `bytes`
+        '''
+        while True:
+            await self._video_frame_chunk_event.wait()
+            yield self._video_frame_chunk
 
     @property
     async def video_stream(self):
