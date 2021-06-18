@@ -129,3 +129,9 @@ Error handling
 
 - Tello SDK 3.0 support
 
+**2.1.0**
+
+- Wait for Wifi network implemented for macOS as well as Linux
+- Mission pad fixes & example improvement (thanks @jsolderitsch!)
+
+
