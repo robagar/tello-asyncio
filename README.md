@@ -134,4 +134,8 @@ Error handling
 - Wait for Wifi network implemented for macOS as well as Linux
 - Mission pad fixes & example improvement (thanks @jsolderitsch!)
 
+**2.1.1**
+
+- Examples ask the user for the WiFi name prefix
+
 
