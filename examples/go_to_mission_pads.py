@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 
+# Fly along a route marked by three mission pads arranged more or less linearly, about 1.5 meters apart.
+# The state messages show that the Tello senses the pads as it goes.
+
 import asyncio
 from tello_asyncio import Tello, Vector
 
