@@ -6,7 +6,7 @@ from tello_asyncio import Tello, Vector
 async def main():
     drone = Tello()
     try:
-        await drone.wifi_wait_for_network()
+        await drone.wifi_wait_for_network(prompt=True)
         await drone.connect()
         await drone.takeoff()
         await drone.go_to(relative_position=Vector(100, 50, 100), speed=25)

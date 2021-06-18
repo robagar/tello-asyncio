@@ -9,7 +9,7 @@ def on_drone_error(drone, error):
 async def main():
     drone = Tello(on_error=on_drone_error)
     try:
-        await drone.wifi_wait_for_network()
+        await drone.wifi_wait_for_network(prompt=True)
         await drone.connect()
         print('Enter commands for the drone, or "quit" to finish...') 
         while True:

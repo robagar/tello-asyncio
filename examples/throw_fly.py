@@ -8,7 +8,7 @@ from tello_asyncio import Tello
 async def main():
     drone = Tello()
     try:
-        await drone.wifi_wait_for_network()
+        await drone.wifi_wait_for_network(prompt=True)
         await drone.connect()
         print('Throw the drone hozontally to launch within 5 seconds!')
         await drone.throw_fly()

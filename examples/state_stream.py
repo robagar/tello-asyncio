@@ -16,7 +16,7 @@ async def main():
             print(f'height: {state.height}, battery: {state.battery}')     
 
     try:
-        await drone.wifi_wait_for_network()
+        await drone.wifi_wait_for_network(prompt=True)
         await drone.connect()
         await asyncio.wait([fly(), watch_state()], return_when=asyncio.FIRST_COMPLETED)
     finally:

@@ -13,7 +13,7 @@ with open('commands.txt', 'r') as f:
 async def main():
     drone = Tello()
     try:
-        await drone.wifi_wait_for_network()
+        await drone.wifi_wait_for_network(prompt=True)
         await drone.connect()
         for i in commands:
             await drone.send(i)

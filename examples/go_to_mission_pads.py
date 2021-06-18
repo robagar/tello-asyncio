@@ -13,7 +13,7 @@ async def main():
         print(f'mission pad: {drone.mission_pad}, position: {drone.mission_pad_position}')
 
     try:
-        await drone.wifi_wait_for_network()
+        await drone.wifi_wait_for_network(prompt=True)
         await drone.connect()
         await drone.enable_mission_pads()
         await drone.takeoff()

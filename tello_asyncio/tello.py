@@ -493,7 +493,7 @@ class Tello:
         '''
         return await self.send('wifi?', response_parser=lambda m: int(m))
 
-    async def wifi_wait_for_network(self, prefix=None):
+    async def wifi_wait_for_network(self, prefix=None, prompt=False):
         '''
         Waits until the WiFi network is established.
         
@@ -502,10 +502,13 @@ class Tello:
         - Only works on Linux and macOS
 
         :param prefix: The WiFi network SSID name prefix, defaults to the hardware string "RMTT" or "TELLO" (if known, otherwise "TELLO")
+        :param prompt: If true, ask the user for the prefix
         '''
+        if prompt:
+            prefix = input('Please enter the WiFi network name prefix to look for, eg "RMTT". Defaults to "TELLO"> ')
         if prefix:
             self._wifi_ssid_prefix = prefix
-        else:
+        if not prefix:
             prefix = self._controller_hardware or 'TELLO'
 
         print(f'waiting for WiFi ({prefix})...')
@@ -869,7 +872,7 @@ class Tello:
         See the `SDK 3.0 User Guide` <https://dl.djicdn.com/downloads/RoboMaster+TT/Tello_SDK_3.0_User_Guide_en.pdf>`_ for command details.
 
         Requires SDK 3+ and the open source controller
-        
+
         :param ssid: Network name
         :param password: Password
         :return: The response from the drone

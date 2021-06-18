@@ -6,7 +6,7 @@ from tello_asyncio import Tello, Direction
 async def main():
     drone = Tello()
     try:
-        await drone.wifi_wait_for_network()
+        await drone.wifi_wait_for_network(prompt=True)
         await drone.connect()
         await drone.takeoff()
         for direction in [Direction.LEFT, Direction.RIGHT, Direction.FORWARD, Direction.BACK]:
