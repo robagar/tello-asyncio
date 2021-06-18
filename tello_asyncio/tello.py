@@ -102,6 +102,7 @@ class Tello:
     async def connect(self):
         '''
         Opens the UDP connection to the drone and puts it in SDK mode.
+
         :return: The response from the drone
         '''
         print(f'CONNECT {self._drone_host}')
@@ -180,6 +181,7 @@ class Tello:
     async def takeoff(self):
         '''
         Take off and hover.
+
         :return: The response from the drone
         '''
         self._flying = True
@@ -188,6 +190,7 @@ class Tello:
     async def land(self):
         '''
         Land and stop motors.
+
         :return: The response from the drone
         '''
         return await self.send('land')
@@ -219,6 +222,7 @@ class Tello:
     async def stop(self):
         '''
         Stop and hover in place.
+
         :return: The response from the drone
         '''
         return await self.send('stop')
@@ -339,6 +343,7 @@ class Tello:
     async def flip_left(self):
         '''
         Flip left.
+
         :return: The response from the drone
         '''
         return await self.send('flip l')
@@ -346,6 +351,7 @@ class Tello:
     async def flip_right(self):
         '''
         Flip right.
+
         :return: The response from the drone
         '''
         return await self.send('flip r')
@@ -353,6 +359,7 @@ class Tello:
     async def flip_forward(self):
         '''
         Flip forwards.
+
         :return: The response from the drone
         '''
         return await self.send('flip f')
@@ -360,6 +367,7 @@ class Tello:
     async def flip_back(self):
         '''
         Flip backwards.
+
         :return: The response from the drone
         '''
         await self.send('flip b')
@@ -405,6 +413,7 @@ class Tello:
     async def enable_mission_pads(self):
         '''
         Start attempting to detect mission pads.
+
         :return: The response from the drone
         '''
         return await self.send('mon')
@@ -412,6 +421,7 @@ class Tello:
     async def disable_mission_pads(self):
         '''
         Stop detecting mission pads.
+
         :return: The response from the drone
         '''
         return await self.send('moff')
@@ -491,7 +501,7 @@ class Tello:
         - This does not actually connect to the WiFi network
         - Only works on Linux and macOS
 
-        :param prefix: The WiFi network SSID name prefix, defaults to the hardware string "RMTT" or "TELLO"
+        :param prefix: The WiFi network SSID name prefix, defaults to the hardware string "RMTT" or "TELLO" (if known, otherwise "TELLO")
         '''
         if prefix:
             self._wifi_ssid_prefix = prefix
@@ -614,6 +624,7 @@ class Tello:
     async def stop_video(self):
         '''
         Stop streaming video.
+
         :return: The response from the drone
         '''
         return await self.send('streamoff')
@@ -693,7 +704,9 @@ class Tello:
     async def motor_on(self):
         '''
         Starts the motors at low speed to keep the drone cool while lon the ground.
+
         Requires SDK 3+
+
         :return: The response from the drone
         '''
         await self._require_sdk_3()
@@ -702,7 +715,9 @@ class Tello:
     async def motor_off(self):
         '''
         Stops the motors if started in low speed mode.
+
         Requires SDK 3+
+
         :return: The response from the drone
         '''
         await self._require_sdk_3()
@@ -711,7 +726,9 @@ class Tello:
     async def throw_fly(self):
         '''
         Launch the drone by throwing horizontally within 5 seconds.
+
         Requires SDK 3+
+
         :return: The response from the drone
         '''
         await self._require_sdk_3()
@@ -720,7 +737,9 @@ class Tello:
     async def reboot(self):
         '''
         Reboot the drone.
+
         Requires SDK 3+
+        
         :return: The response from the drone
         '''
         await self._require_sdk_3()
@@ -729,7 +748,9 @@ class Tello:
     async def set_wifi_channel(self, wifi_channel):
         '''
         Sets the Wifi channel.
+        
         Requires SDK 3+ and the open source controller.
+
         :param wifi_channel: The WiFi channel
         :return: The response from the drone
         '''
@@ -739,7 +760,9 @@ class Tello:
     async def set_ports(self, status_port, video_port):
         '''
         Sets the UDP ports for status and video data.
+
         Requires SDK 3+
+        
         :return: The response from the drone
         '''
         await self._require_sdk_3()
@@ -748,7 +771,9 @@ class Tello:
     async def set_video_frame_rate(self, frame_rate):
         '''
         Sets the video frame rate.
+
         Requires SDK 3+
+        
         :param frame_rate: "low" (5fps), "middle" (15fps) or "high" (30fps)
         :type frame_rate: :class:`tello_asyncio.types.VideoFrameRate`
         :return: The response from the drone
@@ -759,7 +784,9 @@ class Tello:
     async def set_video_bit_rate(self, bit_rate):
         '''
         Sets the video bit rate.
+
         Requires SDK 3+
+        
         :param bit_rate: 1-5Mbps, or zero for auto
         :return: The response from the drone
         '''
@@ -769,7 +796,9 @@ class Tello:
     async def set_video_resolution(self, resolution):
         '''
         Sets the video resolution.
+
         Requires SDK 3+
+
         :param resolution: "low" 480p or "high" 720p
         :type frame_rate: :class:`tello_asyncio.types.VideoResolution`
         :return: The response from the drone
@@ -781,6 +810,7 @@ class Tello:
     async def controller_hardware(self):
         '''
         The controller hardware - "TELLO" or "RMTT" for the open source controller.
+
         Requires SDK 3+
         '''
         await self._require_sdk_3()
@@ -792,6 +822,7 @@ class Tello:
     async def wifi_version(self):
         '''
         The WiFi version.
+
         Requires SDK 3+ and the open source controller
         '''
         await self._require_open_source_controller()
@@ -801,6 +832,7 @@ class Tello:
     async def wifi_name_and_password(self):
         '''
         The WiFi access point name and password.
+
         Requires SDK 3+ and the open source controller
         '''
         await self._require_open_source_controller()
@@ -810,6 +842,7 @@ class Tello:
     async def wifi_ssid(self):
         '''
         The WiFi SSID.
+
         Requires SDK 3+ and the open source controller
         '''
         await self._require_open_source_controller()
@@ -818,7 +851,9 @@ class Tello:
     async def set_multi_wifi_credentials(self, ssid, password):
         '''
         Set WiFi credentials for connecting to multiple devices as a router.
-        Requires SDK 3+ and the open source controller
+
+        Requires SDK 3+ and the open source controller.
+
         :param ssid: Network name
         :param password: Password
         :return: The response from the drone
@@ -834,6 +869,7 @@ class Tello:
         See the `SDK 3.0 User Guide` <https://dl.djicdn.com/downloads/RoboMaster+TT/Tello_SDK_3.0_User_Guide_en.pdf>`_ for command details.
 
         Requires SDK 3+ and the open source controller
+        
         :param ssid: Network name
         :param password: Password
         :return: The response from the drone
