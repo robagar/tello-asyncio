@@ -51,7 +51,6 @@ async def wait_for_wifi_macos(ssid_prefix):
     while True:
         for device in devices:
             s,e = await run_shell(f'networksetup -getairportnetwork {device}')
-            print(s)
             if s and s.startswith(waiting_for):
                 return
         await asyncio.sleep(0.25)
