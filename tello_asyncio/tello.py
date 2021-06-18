@@ -34,7 +34,7 @@ class Tello:
     _state = None
     _video = None
     _flying = False
-    _wifi_ssid_prefix = 'TELLO'
+    _wifi_ssid_prefix = None
     _sdk_version = None
     _controller_hardware = None
 
@@ -466,6 +466,8 @@ class Tello:
     async def connect_to_wifi(self, ssid, password):
         '''
         Connect to another WiFi network and reboot.
+
+        NB this also sets the Wifi network prefix used by `wifi_wait_for_network`
  
         :param ssid: Network name
         :param password: Password
@@ -481,17 +483,24 @@ class Tello:
         '''
         return await self.send('wifi?', response_parser=lambda m: int(m))
 
-    async def wifi_wait_for_network(self):
+    async def wifi_wait_for_network(self, prefix=None):
         '''
         Waits until the WiFi network is established.
         
         NB: 
         - This does not actually connect to the WiFi network
-        - Only works on Linux
+        - Only works on Linux and Mac OS
+
+        :param prefix: The WiFi network SSID name prefix, defaults to the hardware string "RMTT" or "TELLO"
         '''
-        print('waiting for WiFi...')
+        if prefix:
+            self._wifi_ssid_prefix = prefix
+        else:
+            prefix = self._controller_hardware or 'TELLO'
+
+        print(f'waiting for WiFi ({prefix})...')
         try:
-            await wait_for_wifi(self._wifi_ssid_prefix)
+            await wait_for_wifi(prefix)
         except Exception as e:
             print(f'...wait for WiFi failed, error: {e}')
             print('assuming WiFi network is connected and continuing')
