@@ -489,7 +489,7 @@ class Tello:
         
         NB: 
         - This does not actually connect to the WiFi network
-        - Only works on Linux and Mac OS
+        - Only works on Linux and macOS
 
         :param prefix: The WiFi network SSID name prefix, defaults to the hardware string "RMTT" or "TELLO"
         '''
