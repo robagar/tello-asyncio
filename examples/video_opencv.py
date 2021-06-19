@@ -16,7 +16,7 @@ def fly():
         try:
             await drone.wifi_wait_for_network(prompt=True)
             await drone.connect()
-            await drone.start_video()
+            await drone.start_video(connect=False)
             await drone.takeoff()
             await drone.turn_clockwise(360)
             await drone.land()
@@ -25,6 +25,9 @@ def fly():
             await drone.disconnect()
 
     asyncio.run(main())
+
+# needed for drone.wifi_wait_for_network() in worker thread in Python < 3.8
+asyncio.get_child_watcher()
 
 fly_thread = Thread(target=fly, daemon=True)
 fly_thread.start()

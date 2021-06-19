@@ -40,6 +40,9 @@ def fly():
 
     asyncio.run(main())
 
+# needed for drone.wifi_wait_for_network() in worker thread in Python < 3.8
+asyncio.get_child_watcher()
+
 fly_thread = Thread(target=fly, daemon=True)
 fly_thread.start()
 
