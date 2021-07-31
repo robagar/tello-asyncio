@@ -138,4 +138,8 @@ Error handling
 
 - Examples ask the user for the WiFi name prefix
 
+**2.1.2**
+
+- Don't wait for a response from remote control (`rc x x x x`) commands
+ 
 
