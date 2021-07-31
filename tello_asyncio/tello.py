@@ -530,9 +530,13 @@ class Tello:
         '''
         if not self._transport.is_closing():
             print(f'SEND {message}')
+            
+            self._transport.sendto(message.encode())
+            if not self._expect_response(message):
+                return
+
             response = self._loop.create_future()
             self._protocol.pending.append((message, response, response_parser))
-            self._transport.sendto(message.encode())
             error = None
             try:
                 response_message, result = await asyncio.wait_for(response, timeout=timeout)
@@ -555,6 +559,10 @@ class Tello:
                 # default behaviour
                 await self._abort()
                 raise error
+
+    def _expect_response(self, message):
+        # drone responds to everything except remote control commands
+        return not message.startswith('rc ')
 
     _aborted = False
     async def _abort(self):
@@ -869,7 +877,7 @@ class Tello:
         Sends a command like "EXT xxx" for the open source contoller, returning
         the response.
 
-        See the `SDK 3.0 User Guide` <https://dl.djicdn.com/downloads/RoboMaster+TT/Tello_SDK_3.0_User_Guide_en.pdf>`_ for command details.
+        See the `SDK 3.0 User Guide <https://dl.djicdn.com/downloads/RoboMaster+TT/Tello_SDK_3.0_User_Guide_en.pdf>`_ for command details.
 
         Requires SDK 3+ and the open source controller
 
