@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(name='tello_asyncio',
-      version='2.1.1',
+      version='2.1.2',
       description='Asyncio-based control library for the Tello drone',
       long_description=long_description,
       long_description_content_type="text/markdown",
