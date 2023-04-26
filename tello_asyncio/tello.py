@@ -68,7 +68,7 @@ class Tello:
                 if response_parser:
                     result = response_parser(message)
                 else:    
-                    if message == 'ok':
+                    if message == 'ok' or message == 'matrix ok':
                         result = None
                     else:
                         response.set_exception(Tello.Error(message))
@@ -709,8 +709,9 @@ class Tello:
 
     async def _require_open_source_controller(self):
         h = await self.controller_hardware
-        if not h == ControllerHardware.OPEN_SOURCE:
-            raise Tello.Error(f'Requires the open source TT controller.  Drone hardware is "{h}"')
+        if not h == ControllerHardware.OPEN_SOURCE.value:
+            raise Tello.Error(f'Requires the open source TT controller ("{ControllerHardware.OPEN_SOURCE.value}"). ' +
+                              f'Drone hardware is "{h}"')
 
     async def motor_on(self):
         '''
@@ -826,7 +827,7 @@ class Tello:
         '''
         await self._require_sdk_3()
         if not self._controller_hardware:
-            self._controller_hardware = await self.send('hardware?')
+            self._controller_hardware = await self.send('hardware?', response_parser=lambda m: m.strip())
         return self._controller_hardware
 
     @property
