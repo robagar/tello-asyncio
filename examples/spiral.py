@@ -4,9 +4,9 @@ import asyncio
 from tello_asyncio import Tello, Vector
 
 
-
 STEPS = 4
 DISTANCE_STEP = 20
+
 
 async def main():
     drone = Tello()
@@ -21,18 +21,19 @@ async def main():
         await drone.wifi_wait_for_network(prompt=True)
         await drone.connect()
         await drone.takeoff()
-        
-        for i in range(2, STEPS+1, 1):
+
+        for i in range(2, STEPS + 1, 1):
             await half_spiral(i * DISTANCE_STEP)
 
         for i in range(STEPS, 1, -1):
             await half_spiral(i * DISTANCE_STEP)
-   
+
         await drone.land()
     finally:
         await drone.disconnect()
 
+
 # Python 3.7+
-#asyncio.run(main())
+# asyncio.run(main())
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())

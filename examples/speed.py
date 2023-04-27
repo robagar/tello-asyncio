@@ -3,6 +3,7 @@
 import asyncio
 from tello_asyncio import Tello, Vector
 
+
 async def main():
     drone = Tello()
     try:
@@ -13,14 +14,15 @@ async def main():
         for i in range(1, 3):
             await drone.set_speed(10 * i)
             speed = await drone.speed
-            print(f'speed: {speed}') 
+            print(f"speed: {speed}")
 
         await drone.stop()
         await drone.land()
     finally:
         await drone.disconnect()
 
+
 # Python 3.7+
-#asyncio.run(main())
+# asyncio.run(main())
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())

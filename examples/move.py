@@ -3,8 +3,9 @@
 import asyncio
 from tello_asyncio import Tello
 
+
 def on_drone_state(drone, state):
-    print(f'acceleration: {state.acceleration}, velocity: {state.velocity}')
+    print(f"acceleration: {state.acceleration}, velocity: {state.velocity}")
 
 
 async def main():
@@ -23,7 +24,8 @@ async def main():
     finally:
         await drone.disconnect()
 
+
 # Python 3.7+
-#asyncio.run(main())
+# asyncio.run(main())
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())

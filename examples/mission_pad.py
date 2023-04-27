@@ -3,8 +3,10 @@
 import asyncio
 from tello_asyncio import Tello, MissionPadDetection
 
+
 def on_drone_state(drone, state):
-    print(f'mission pad: {state.mission_pad}, position: {state.mission_pad_position}')
+    print(f"mission pad: {state.mission_pad}, position: {state.mission_pad_position}")
+
 
 async def main():
     drone = Tello(on_state=on_drone_state)
@@ -20,7 +22,8 @@ async def main():
     finally:
         await drone.disconnect()
 
+
 # Python 3.7+
-#asyncio.run(main())
+# asyncio.run(main())
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())

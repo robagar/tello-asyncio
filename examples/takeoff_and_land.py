@@ -3,6 +3,7 @@
 import asyncio
 from tello_asyncio import Tello
 
+
 async def main():
     drone = Tello()
     try:
@@ -13,7 +14,8 @@ async def main():
     finally:
         await drone.disconnect()
 
+
 # Python 3.7+
-#asyncio.run(main())
+# asyncio.run(main())
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())

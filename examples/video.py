@@ -3,8 +3,10 @@
 import asyncio
 from tello_asyncio import Tello
 
+
 def on_video_frame(drone, frame):
-    print(f'FRAME {frame}')
+    print(f"FRAME {frame}")
+
 
 async def main():
     drone = Tello()
@@ -19,7 +21,8 @@ async def main():
         await drone.stop_video()
         await drone.disconnect()
 
+
 # Python 3.7+
-#asyncio.run(main())
+# asyncio.run(main())
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())

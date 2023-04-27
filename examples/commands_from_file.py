@@ -3,12 +3,15 @@
 import asyncio
 from tello_asyncio import Tello
 
+
 def is_command(s):
     s = s.strip()
-    return s and not s.startswith('#')
+    return s and not s.startswith("#")
 
-with open('commands.txt', 'r') as f:
-    commands = [l.strip() for l in f if is_command(l)]  
+
+with open("commands.txt", "r") as f:
+    commands = [l.strip() for l in f if is_command(l)]
+
 
 async def main():
     drone = Tello()
@@ -20,7 +23,8 @@ async def main():
     finally:
         await drone.disconnect()
 
+
 # Python 3.7+
-#asyncio.run(main())
+# asyncio.run(main())
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())

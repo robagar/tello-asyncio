@@ -3,17 +3,19 @@
 import asyncio
 from tello_asyncio import Tello
 
+
 async def main():
     drone = Tello()
     try:
         await drone.wifi_wait_for_network(prompt=True)
         await drone.connect()
         battery = await drone.query_battery()
-        print(f'battery: {battery}%')
+        print(f"battery: {battery}%")
     finally:
         await drone.disconnect()
 
+
 # Python 3.7+
-#asyncio.run(main())
+# asyncio.run(main())
 loop = asyncio.get_event_loop()
 loop.run_until_complete(main())
