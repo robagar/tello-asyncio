@@ -67,6 +67,10 @@ class Tello:
 
             print("RECEIVED", message)
 
+            if message == "forced stop":
+                print("FORCED STOP")
+                return
+
             try:
                 sent_message, response, response_parser = self.pending.popleft()
                 if response_parser:
