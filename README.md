@@ -31,6 +31,8 @@ Requires Python 3.6+. Developed and tested with Python 3.9.4 in Mac OS and 3.6.9
 
 Full documentation is available on [Read the docs](https://tello-asyncio.readthedocs.io/en/latest/)
 
+(If Rust is more your thing, there is also an equivalent aynchronous Rust library [tello-edu](https://crates.io/crates/tello-edu)) 
+
 ## Tello SDK Support
 
 * [Tello SDK 2.0](https://dl-cdn.ryzerobotics.com/downloads/Tello/Tello%20SDK%202.0%20User%20Guide.pdf) (Tello EDU) - complete support
@@ -141,5 +143,11 @@ Error handling
 **2.1.2**
 
 - Don't wait for a response from remote control (`rc x x x x`) commands
+
+**2.1.3**
+
+- Various SDK 3.0 fixes (thanks @jdelfino!)
+- Handle "forced stop" message which arrives out of sequence
+
  
 
