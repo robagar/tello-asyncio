@@ -4,6 +4,9 @@ A library for controlling and interacting with the [Tello EDU](https://www.ryzer
 
 Package [tello-asyncio](https://pypi.org/project/tello-asyncio/) on PyPi. 
 
+(If Rust is more your thing, there is also an equivalent asynchronous Rust library [tello-edu](https://crates.io/crates/tello-edu)) 
+
+
 ``` bash
 $ pip3 install tello-asyncio
 ```
@@ -30,8 +33,6 @@ See the [examples](examples) directory for more usage example scripts.
 Requires Python 3.6+. Developed and tested with Python 3.9.4 in Mac OS and 3.6.9 in Ubuntu 18.04 on a [Jetson Nano](https://developer.nvidia.com/embedded/jetson-nano-developer-kit).  The *tello_asyncio* package has no other dependencies (and never will have any), but some examples need other things to be installed to work.
 
 Full documentation is available on [Read the docs](https://tello-asyncio.readthedocs.io/en/latest/)
-
-(If Rust is more your thing, there is also an equivalent aynchronous Rust library [tello-edu](https://crates.io/crates/tello-edu)) 
 
 ## Tello SDK Support
 
