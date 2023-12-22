@@ -3,7 +3,7 @@
 import asyncio
 from threading import Thread
 import tkinter  # requires python-tk
-import h264decoder  # see https://github.com/DaWelter/h264decoder for installation instructions
+import av       # requires pyav
 from PIL import Image, ImageTk  # requires Pillow
 
 from tello_asyncio import Tello, VIDEO_WIDTH, VIDEO_HEIGHT
@@ -15,22 +15,23 @@ frame_image = None
 
 
 def fly():
-    decoder = h264decoder.H264Decoder()
+    codec = av.CodecContext.create('h264', 'r')
 
-    def on_video_frame(drone, frame):
+    def on_video_frame(drone, buf):
         global frame_image
         try:
-            (frame_info, num_bytes) = decoder.decode_frame(frame)
-            (frame_data, width, height, row_size) = frame_info
-            if width and height:
-                frame_image = Image.frombytes("RGB", (width, height), frame_data)
+            packets = codec.parse(buf)
+            for packet in packets:
+                frames = codec.decode(packet)
+                for frame in frames:
+                    frame_image = frame.to_image()
         except Exception as e:
             print(e)
 
     async def main():
         drone = Tello()
         try:
-            await drone.wifi_wait_for_network(prompt=True)
+            await drone.wifi_wait_for_network(prompt=False)
             await drone.connect()
             await drone.start_video(on_video_frame)
             await drone.takeoff()

@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import asyncio
-import h264decoder  # see https://github.com/DaWelter/h264decoder for installation instructions
+import av              # requires pyav
 from PIL import Image  # requires Pillow
 
 from tello_asyncio import Tello
 
 Path("video_save_frames").mkdir(exist_ok=True)
 
+codec = av.CodecContext.create('h264', 'r')
 i = 1
-decoder = h264decoder.H264Decoder()
 
 
-def on_video_frame(drone, frame):
+def on_video_frame(drone, buf):
     global i
 
     try:
-        (frame_info, num_bytes) = decoder.decode_frame(frame)
-        (frame_data, width, height, row_size) = frame_info
-        if width and height:
-            image = Image.frombytes("RGB", (width, height), frame_data)
-            file_path = f"video_save_frames/frame-{i}.jpg"
-            image.save(file_path)
-            i += 1
+        packets = codec.parse(buf)
+        for packet in packets:
+            frames = codec.decode(packet)
+            for frame in frames:
+                image = frame.to_image()
+                file_path = f"video_save_frames/frame-{i}.jpg"
+                image.save(file_path)
+                i += 1
     except Exception as e:
         print(e)
 
